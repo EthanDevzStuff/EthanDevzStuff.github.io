@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Big Scary Yellow Book — Recipe Explorer</title>
+  <style>
+    :root{
+      --bg:#0f172a; --card:#0b1220; --muted:#94a3b8; --accent:#06b6d4;
+      --gold:#f59e0b; --glass: rgba(255,255,255,0.03);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;background:linear-gradient(180deg,#071029 0%, #061224 100%);color:#e6eef6;min-height:100vh}
+    .container{max-width:1100px;margin:28px auto;padding:18px}
+    header{display:flex;justify-content:space-between;align-items:center;padding:18px;border-radius:12px;background:linear-gradient(90deg,#0b122a,#05202a);box-shadow:0 6px 24px rgba(0,0,0,0.6)}
+    h1{margin:0;font-size:20px}
+    .subtitle{color:var(--muted);font-size:13px;margin-top:4px}
+    .grid{display:grid;gap:14px;grid-template-columns:320px 1fr}
+    aside{background:var(--card);padding:12px;border-radius:10px;height:calc(100vh - 460px);overflow:auto}
+    main{padding:12px;border-radius:10px;background:linear-gradient(180deg,#071029 0%, #061224 100%);min-height:60vh}
+    .search{display:flex;gap:8px}
+    input[type="text"], select, input[type="number"]{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+    button{background:var(--accent);border:none;padding:8px 12px;border-radius:8px;color:#002;cursor:pointer;font-weight:600}
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
+    .card{background:var(--glass);padding:10px;border-radius:8px;margin-bottom:10px;border:1px solid rgba(255,255,255,0.02)}
+    .list-item{padding:8px;border-radius:6px;margin-bottom:6px;background:rgba(255,255,255,0.02);cursor:pointer}
+    .list-item:hover{background:rgba(255,255,255,0.03)}
+    pre{background:#071226;padding:8px;border-radius:6px;overflow:auto}
+    .fields{display:flex;flex-wrap:wrap;gap:8px}
+    .field{background:rgba(0,0,0,0.2);padding:6px 8px;border-radius:6px;font-size:13px}
+    .pill{display:inline-block;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.03);font-size:12px;color:var(--muted)}
+    footer{margin-top:18px;color:var(--muted);font-size:13px}
+    img.thumb{max-width:84px;border-radius:6px;margin-right:10px;border:1px solid rgba(255,255,255,0.04)}
+    /* modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:40}
+    .modal{width:800px;max-width:96%;background:#071226;padding:16px;border-radius:10px;border:1px solid rgba(255,255,255,0.04)}
+    .row{display:flex;gap:10px;align-items:center}
+    .right{margin-left:auto}
+    .small{font-size:13px;color:var(--muted)}
+    table{width:100%;border-collapse:collapse}
+    td,th{padding:6px;border-bottom:1px dashed rgba(255,255,255,0.03);text-align:left}
+    .disabled{opacity:0.6;pointer-events:none}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}aside{height:auto}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Big Scary Yellow Book — Recipe Explorer</h1>
+        <div class="subtitle">Browse machines, items, recipes & play quizzes</div>
+      </div>
+      <div>
+        <button id="quizBtn">Start Quiz</button>
+      </div>
+    </header>
+
+    <div class="grid" style="margin-top:16px">
+      <aside>
+        <div class="card">
+          <div style="font-weight:700;margin-bottom:8px">Search</div>
+          <div class="search">
+            <input id="globalSearch" type="text" placeholder="Search recipes, items, machines..." />
+            <button id="clearSearch" class="btn-ghost">Clear</button>
+          </div>
+          <div style="margin-top:10px" class="fields">
+            <div class="field"><strong id="countsRecipes">Recipes: —</strong></div>
+            <div class="field"><strong id="countsItems">Items: —</strong></div>
+            <div class="field"><strong id="countsMachines">Machines: —</strong></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="font-weight:700">Quick actions</div>
+          <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px">
+            <button id="btnRandom" class="btn-ghost">Random Recipe</button>
+            <button id="btnShowLeaderboard" class="btn-ghost">Leaderboard</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="font-weight:700">Valve Control</div>
+          <div style="margin-top:8px">
+            <label class="small">Number of machines</label>
+            <input id="valveMachines" type="number" min="2" value="4" />
+            <div style="margin-top:8px">
+              <button id="vcCalc" class="btn-ghost">Calculate</button>
+            </div>
+            <pre id="vcOutput" style="margin-top:8px;max-height:220px;overflow:auto"></pre>
+          </div>
+        </div>
+
+        <!-- <div class="card">
+          <div style="font-weight:700">Data sources</div>
+          <div class="small" style="margin-top:8px">
+            Place <code>recipes.json</code>, <code>machines.json</code>, <code>items.json</code> and <code>points.json</code> in the same folder as this HTML file.<br/>
+            Images folder: <code>Images/</code> — thumbnails named like <code>Item_Name.png</code>.
+          </div>
+        </div> -->
+      </aside>
+
+      <main>
+
+        
+        <div class="card" style="margin-bottom:12px">
+          <div style="display:flex;gap:8px;align-items:center">
+            <input id="searchInput" type="text" placeholder="Search recipes or item names here…" />
+            <select id="searchMode">
+              <option value="recipes">All Recipes</option>
+              <option value="items">Items</option>
+              <option value="machines">Machines</option>
+            </select>
+            <button id="searchBtn">Search</button>
+            <!-- <div class="right small">Tip: click a recipe to open it</div> -->
+          </div>
+        </div>
+        <div id="detail" class="card" style="margin-top:12px;display:none"></div>
+        <div id="results" class="card">
+          <div style="font-weight:700;margin-bottom:8px">Results</div>
+          <div id="listArea">Loading data…</div>
+        </div>
+        
+        <div id="detail" class="card" style="margin-top:12px;display:none"></div>
+      </main>
+    </div>
+
+    <footer class="small">Made by ethanmracing — web version</footer>
+  </div>
+
+  <!-- Modal area -->
+  <div id="modals"></div>
+
+  <script>
+    // ---------------------------
+    // Data + helpers
+    // ---------------------------
+    const FILE_RECIPES = 'recipes.json';
+    const FILE_MACHINES = 'machines.json';
+    const FILE_ITEMS = 'items.json';
+    // points.json is optional — we use localStorage fallback
+    let recipes = [], machines = [], items = [];
+    const moneyMultipliers = {
+      "Normal": {"-40%":1.0689,"-20%":1.0344,"0%":1.0,"+20%":0.9656,"+50%":0.9138,"+100%":0.8276,"+200%":0.6552,"+500%":0.1380,"+560%":0.0363},
+      "Hard": {"-40%":0.74051,"-20%":0.87044,"0%":1.0,"+20%":1.12956,"+50%":1.32456,"+100%":1.6493,"+200%":2.2986,"+500%":4.24649,"+560%":4.62952},
+      "Insane": {"-40%":null,"-20%":null,"0%":1.0,"+20%":1.09069,"+50%":1.22725,"+100%":1.45451,"+200%":1.90902,"+500%":3.27255,"+560%":3.54066},
+      "Impossible": {"-40%":null,"-20%":null,"0%":1.0,"+20%":1.31585,"+50%":1.49998,"+100%":1.70708,"+200%":1.99996,"+500%":2.58108,"+560%":2.67174}
+    };
+
+    function parseSellValue(v){
+      if (typeof v === 'number') return v;
+      if (!v) return 0;
+      const s = String(v).replace(/[$,]/g,'').trim();
+      const f = parseFloat(s);
+      return Number.isFinite(f) ? f : 0;
+    }
+
+    function sanitizeName(name=''){ return name.trim().replace(/\s+/g,'_'); }
+
+    function extractItems(text=''){
+      if (!text) return [];
+      const parts = text.replace(/;/g, '+').split('+').map(s=>s.trim()).filter(Boolean);
+      const out = [];
+      for (const p of parts){
+        if (p.includes(' x ')){
+          out.push(p.split(' x ').slice(0,1)[0].trim());
+        } else out.push(p);
+      }
+      return out;
+    }
+
+    function formatRecipeLine(r = {}){
+      function parseSec(sec=''){
+        return sec.replace(/;/g,'+').split('+').map(s=>s.trim()).filter(Boolean).map(part => {
+          if (part.includes(' x ')){
+            const [name, qty] = part.split(' x ').map(s=>s.trim());
+            return `${name} x${qty}`;
+          }
+          return part;
+        }).join(' + ');
+      }
+      const inps = parseSec(r.inputs||'');
+      const outs = parseSec(r.outputs||'');
+      const time = r.time ? `${r.time}s` : '';
+      const flux = r.mamyflux ? `${r.mamyflux}/s` : '';
+      const arrowInfo = [time, flux].filter(Boolean).join(' ');
+      const arrow = arrowInfo ? `→ ${arrowInfo} →` : '→';
+      return `${inps} ${arrow} ${outs}${r.machine ? ' ('+r.machine+')' : ''}`;
+    }
+
+    function loadJSON(path){
+      return fetch(path).then(r => {
+        if (!r.ok) return null;
+        return r.json();
+      }).catch(()=>null);
+    }
+
+    // ---------------------------
+    // UI wiring
+    // ---------------------------
+    const listArea = document.getElementById('listArea');
+    const resultsCard = document.getElementById('results');
+    const detail = document.getElementById('detail');
+    const countsRecipes = document.getElementById('countsRecipes');
+    const countsItems = document.getElementById('countsItems');
+    const countsMachines = document.getElementById('countsMachines');
+    const globalSearch = document.getElementById('globalSearch');
+    const clearSearch = document.getElementById('clearSearch');
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const searchMode = document.getElementById('searchMode');
+    const quizBtn = document.getElementById('quizBtn');
+    const btnRandom = document.getElementById('btnRandom');
+    const btnShowLeaderboard = document.getElementById('btnShowLeaderboard');
+
+    // load data
+    async function init(){
+      const [r, m, it] = await Promise.all([
+        loadJSON(FILE_RECIPES),
+        loadJSON(FILE_MACHINES),
+        loadJSON(FILE_ITEMS)
+      ]);
+      recipes = Array.isArray(r) ? r : [];
+      machines = Array.isArray(m) ? m : [];
+      items = Array.isArray(it) ? it : [];
+
+      countsRecipes.textContent = `Recipes: ${recipes.length}`;
+      countsItems.textContent = `Items: ${items.length}`;
+      countsMachines.textContent = `Machines: ${machines.length}`;
+
+      renderRecipeList(recipes.slice(0, 50));
+      setupHandlers();
+    }
+
+    function setupHandlers(){
+      clearSearch.addEventListener('click', () => { globalSearch.value = ''; updateFilter(); });
+      globalSearch.addEventListener('input', debounce(updateFilter, 250));
+      searchBtn.addEventListener('click', () => doSearch(searchInput.value.trim(), searchMode.value));
+      searchInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') doSearch(searchInput.value.trim(), searchMode.value); });
+      quizBtn.addEventListener('click', () => startQuiz());
+      btnRandom.addEventListener('click', () => showRandomRecipe());
+      btnShowLeaderboard.addEventListener('click', () => showLeaderboardModal());
+      document.getElementById('vcCalc').addEventListener('click', valveControlCalc);
+    }
+
+    // ---------------------------
+    // Filter + list rendering
+    // ---------------------------
+    function updateFilter(){
+      const q = globalSearch.value.trim().toLowerCase();
+      if (!q){ renderRecipeList(recipes.slice(0,50)); return; }
+      const filtered = recipes.filter(r => {
+        const text = `${r.inputs || ''} ${r.outputs || ''} ${r.machine || ''}`.toLowerCase();
+        return text.includes(q);
+      }).slice(0,100);
+      renderRecipeList(filtered);
+    }
+
+    function renderRecipeList(list){
+      if (!list.length){
+        listArea.innerHTML = '<div class="small">No recipes to show.</div>'; return;
+      }
+      const frag = document.createDocumentFragment();
+      list.forEach((r, idx) => {
+        const el = document.createElement('div');
+        el.className = 'list-item';
+        el.innerHTML = `<div style="display:flex;align-items:center;gap:10px">
+                          <div style="flex:1">
+                            <div style="font-weight:700">${escapeHtml(formatRecipeLine(r))}</div>
+                            <div class="small" style="margin-top:6px;color:var(--muted)">${escapeHtml(r.machine || '')}</div>
+                          </div>
+                          <div class="pill">#${idx+1}</div>
+                        </div>`;
+        el.addEventListener('click', ()=> openRecipeDetail(r));
+        frag.appendChild(el);
+      });
+      listArea.innerHTML = '';
+      listArea.appendChild(frag);
+    }
+
+    // ---------------------------
+    // Detail panes & modals
+    // ---------------------------
+    function openRecipeDetail(r) {
+    detail.style.display = 'block';
+    detail.innerHTML = ''; // Clear old content
+
+    // Add new content (same as you have)
+    const title = document.createElement('div');
+    title.style.display = 'flex'; title.style.alignItems = 'center';
+    title.innerHTML = `<div style="font-weight:800;font-size:16px">Recipe</div><div class="right small">${r.machine || ''}</div>`;
+    detail.appendChild(title);
+
+    const pre = document.createElement('pre');
+    pre.textContent = formatRecipeLine(r);
+    detail.appendChild(pre);
+
+    if (r.mamyflux || r.time) {
+        const f = document.createElement('div');
+        f.className = 'fields';
+        if (r.mamyflux) f.innerHTML += `<div class="field">Flux: ${r.mamyflux}/s</div>`;
+        if (r.time) f.innerHTML += `<div class="field">Time: ${r.time}s</div>`;
+        detail.appendChild(f);
+    }
+
+    const buttons = document.createElement('div');
+    buttons.style.marginTop = '10px';
+    buttons.innerHTML = `<button id="btnShowInputs" class="btn-ghost">Show Inputs</button>
+                        <button id="btnShowOutputs" class="btn-ghost">Show Outputs</button>
+                        <button id="btnFindMachine" class="btn-ghost">Machine Info</button>
+                        <button id="btnOpenConvert" class="btn-ghost">Find Conversions</button>`;
+    detail.appendChild(buttons);
+
+    document.getElementById('btnShowInputs').addEventListener('click', () => showListExtract('Inputs', r.inputs));
+    document.getElementById('btnShowOutputs').addEventListener('click', () => showListExtract('Outputs', r.outputs));
+    document.getElementById('btnFindMachine').addEventListener('click', () => showMachineModal(r.machine));
+    document.getElementById('btnOpenConvert').addEventListener('click', () => showConversionsForRecipe(r));
+
+    // Scroll the detail container to top smoothly
+    if (detail.scrollTo) {
+        detail.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+        detail.scrollTop = 0;
+    }
+
+    // Also scroll window to top if needed
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+
+    function showListExtract(title, text){
+      const items = extractItems(text);
+      const html = `<div style="font-weight:700;margin-bottom:8px">${title}</div>
+                    <ul>${items.map(it=>`<li>${escapeHtml(it)}</li>`).join('')}</ul>`;
+      showModal(html, {title});
+    }
+
+    function showMachineModal(machineName){
+      if (!machineName) return alert('Machine not specified for this recipe.');
+      const m = machines.find(x => (x.Title||'').toLowerCase() === machineName.toLowerCase());
+      if (!m) return showModal(`<div>Machine <strong>${escapeHtml(machineName)}</strong> not found.</div>`, {title:'Machine Info'});
+      const html = `<div style="display:flex;align-items:center">
+                      <div style="flex:1">
+                        <div style="font-weight:800">${escapeHtml(m.Title)}</div>
+                        <div class="small">${escapeHtml(m.Description || '')}</div>
+                        <div class="fields" style="margin-top:8px">
+                          <div class="field">Cost: ${numberWithCommas(m.Cost||0)}</div>
+                          <div class="field">Pollution: ${escapeHtml(m.Pollution||'')}</div>
+                          <div class="field">Size: ${escapeHtml(m.Size||'')}</div>
+                          <div class="field">Tier: ${escapeHtml(String(m.Tier||''))}</div>
+                        </div>
+                      </div>
+                    </div>`;
+      showModal(html, {title:`Machine: ${m.Title}`});
+    }
+
+    // ---------------------------
+    // Item info + difficulty view
+    // ---------------------------
+    function showItemInfoModal(itemName){
+      const data = items.find(it => (it.title||'').toLowerCase() === itemName.toLowerCase());
+      if (!data) return showModal(`<div>Item <strong>${escapeHtml(itemName)}</strong> not found.</div>`,{title:'Item Info'});
+      const base = parseSellValue(data.sellValue);
+      const imgPath = `Images/${sanitizeName(itemName)}.png`;
+      const hasImg = true; // we'll allow broken images to be ignored
+      let html = `<div style="display:flex;gap:12px;align-items:flex-start">
+                    <div style="flex:1">
+                      <div style="font-weight:800;font-size:16px">${escapeHtml(data.title)}</div>
+                      <div class="small" style="margin-top:6px">Base Sell Value: ${numberWithCommas(base)} mamybucks</div>
+                      <div style="margin-top:10px">
+                        <label class="small">Difficulty:</label>
+                        <select id="difficultySelect" style="margin-left:8px;padding:6px;border-radius:6px;background:transparent;color:inherit">
+                          ${Object.keys(moneyMultipliers).map(d=>`<option>${d}</option>`).join('')}
+                        </select>
+                      </div>
+                      <div id="diffTable" style="margin-top:10px"></div>
+                    </div>
+                    <div style="width:110px;text-align:center">
+                      <img src="${imgPath}" class="thumb" onerror="this.style.display='none'"/>
+                    </div>
+                  </div>`;
+      showModal(html, {title:`Item: ${data.title}`, onOpen: () => {
+        const sel = document.getElementById('difficultySelect');
+        const renderFor = (d)=> {
+          const mul = moneyMultipliers[d];
+          let rows = '<table><thead><tr><th>Pollution</th><th>Sell Value</th></tr></thead><tbody>';
+          Object.entries(mul).forEach(([p, m]) => {
+            rows += `<tr><td>${escapeHtml(p)}</td><td>${m===null ? 'Not Possible' : numberWithCommas((base * m).toFixed(2))+' mamybucks'}</td></tr>`;
+          });
+          rows += '</tbody></table>';
+          document.getElementById('diffTable').innerHTML = rows;
+        };
+        sel.addEventListener('change', ()=> renderFor(sel.value));
+        renderFor(sel.value);
+      }});
+    }
+
+    // ---------------------------
+    // Search commands (convert, invert, etc)
+    // ---------------------------
+  function doSearch(q, mode) {
+    q = q.toLowerCase();
+    if (!q) {
+      // show all immediately depending on mode
+      switch (mode) {
+        case 'recipes':
+          renderRecipeList(recipes);
+          break;
+        case 'items':
+          renderItemList(items);
+          break;
+        case 'machines':
+          renderMachineList(machines);
+          break;
+      }
+      detail.style.display = 'none';
+      return;
+    }
+
+    switch (mode) {
+      case 'recipes':
+        const filteredRecipes = recipes.filter(r => {
+          const text = `${r.inputs || ''} ${r.outputs || ''} ${r.machine || ''}`.toLowerCase();
+          return text.includes(q);
+        });
+        renderRecipeList(filteredRecipes);
+        break;
+      case 'items':
+        const filteredItems = items.filter(it => (it.title || '').toLowerCase().includes(q));
+        renderItemList(filteredItems);
+        break;
+      case 'machines':
+        const filteredMachines = machines.filter(m => ((m.Title || '') + (m.Description || '')).toLowerCase().includes(q));
+        renderMachineList(filteredMachines);
+        break;
+    }
+    detail.style.display = 'none';
+  }
+
+    function showConversionsForRecipe(r){
+      const ins = extractItems(r.inputs || '');
+      const outs = extractItems(r.outputs || '');
+      // show recipes that convert any input to any output
+      const matches = recipes.filter(rr => {
+        const rrIns = extractItems(rr.inputs || '').map(x=>x.toLowerCase());
+        const rrOuts = extractItems(rr.outputs || '').map(x=>x.toLowerCase());
+        return ins.some(i => rrIns.includes(i.toLowerCase())) && outs.some(o => rrOuts.includes(o.toLowerCase()));
+      });
+      if (!matches.length) return showModal(`<div>No conversions found for this recipe.</div>`,{title:'Conversions'});
+      const html = `<div style="font-weight:700;margin-bottom:8px">Conversions</div>
+                    ${matches.map(mm=>`<div style="margin-bottom:6px"><pre>${escapeHtml(formatRecipeLine(mm))}</pre></div>`).join('')}`;
+      showModal(html,{title:'Conversions'});
+    }
+
+    function showRandomRecipe(){
+      if (!recipes.length) return alert('No recipes loaded');
+      const r = recipes[Math.floor(Math.random()*recipes.length)];
+      openRecipeDetail(r);
+    }
+
+    // ---------------------------
+    // Quiz + points
+    // ---------------------------
+    function loadPoints(){
+      try {
+        const raw = localStorage.getItem('mamy_points');
+        return raw ? JSON.parse(raw) : {};
+      } catch { return {}; }
+    }
+    function savePoints(p){ localStorage.setItem('mamy_points', JSON.stringify(p)); }
+
+    function startQuiz(){
+      // find valid recipes with inputs/outputs/mamyflux/time
+      const valid = recipes.filter(r => r.inputs && r.outputs && r.mamyflux && r.time);
+      if (!valid.length) return alert('No valid recipes for a quiz.');
+      const recipe = valid[Math.floor(Math.random()*valid.length)];
+      const correct = (recipe.outputs||'').trim();
+      const wrongPool = valid.filter(r=> (r.outputs||'').trim() !== correct).map(r=> (r.outputs||'').trim());
+      const wrongs = shuffle(wrongPool).slice(0,3);
+      const options = shuffle([correct, ...wrongs]);
+      const html = `<div style="font-weight:700;margin-bottom:8px">What does this recipe produce?</div>
+                    <pre>${escapeHtml(recipe.inputs)} -> ${escapeHtml(recipe.mamyflux)} ${escapeHtml(String(recipe.time))}s -> ❓</pre>
+                    <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+                      ${options.map((o,i)=>`<button class="quiz-opt" data-val="${escapeHtml(o)}">${escapeHtml(o)}</button>`).join('')}
+                    </div>`;
+      showModal(html,{title:'Quiz',onOpen:()=>{
+        const opts = document.querySelectorAll('.quiz-opt');
+        const userId = 'web_user'; // single-user local leaderboard
+        const points = loadPoints();
+        opts.forEach(btn => btn.addEventListener('click', function(){
+          const chosen = this.dataset.val;
+          if (chosen === correct){
+            points[userId] = (points[userId]||0) + 1;
+            savePoints(points);
+            this.textContent = '✅ Correct! Score: ' + points[userId];
+            disableQuizButtons();
+          } else {
+            this.textContent = '❌ Incorrect — Correct: ' + correct;
+            disableQuizButtons();
+          }
+        }));
+        function disableQuizButtons(){ document.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true); }
+      }});
+    }
+
+    function showLeaderboardModal(){
+      const pts = loadPoints();
+      const rows = Object.entries(pts).sort((a,b)=>b[1]-a[1]).slice(0,10);
+      let html = '<div style="font-weight:700;margin-bottom:8px">Leaderboard</div>';
+      if (!rows.length) html += '<div class="small">No scores yet.</div>';
+      else {
+        html += '<table><thead><tr><th>Rank</th><th>User</th><th>Score</th></tr></thead><tbody>';
+        rows.forEach(([uid,score],i) => {
+          html += `<tr><td>${i+1}</td><td>${escapeHtml(uid)}</td><td>${score}</td></tr>`;
+        });
+        html += '</tbody></table>';
+      }
+      showModal(html,{title:'Leaderboard'});
+    }
+
+    // ---------------------------
+    // ValveControl
+    // ---------------------------
+    function valveControlCalc(){
+      const machines = parseInt(document.getElementById('valveMachines').value||'0',10);
+      const out = document.getElementById('vcOutput');
+      if (isNaN(machines) || machines < 2){ out.textContent = 'You need at least 2 machines.'; return; }
+      if (machines > 100){ out.textContent = 'Please choose 100 machines or fewer.'; return; }
+      const share = 100 / machines;
+      let remaining = 100;
+      const lines = [];
+      for (let i=1;i<machines;i++){
+        const bypass = (share / remaining) * 100;
+        lines.push(`V${i}: ${bypass.toFixed(2)}%  ←  Remaining: ${remaining.toFixed(2)}%`);
+        remaining -= share;
+      }
+      lines.push(`Machine ${machines}: receives remaining ${remaining.toFixed(2)}%`);
+      out.textContent = `VC Breakdown for ${machines} Machines\nEach machine should receive ≈ ${share.toFixed(2)}% of total input.\n\n` + lines.join('\n');
+    }
+
+    // ---------------------------
+    // Modal helper
+    // ---------------------------
+    function showModal(contentHTML, opts = {}){
+      const id = 'modal_' + Math.random().toString(36).slice(2,9);
+      const back = document.createElement('div'); back.className = 'modal-backdrop'; back.id = id;
+      const modal = document.createElement('div'); modal.className='modal';
+      const header = document.createElement('div'); header.style.display='flex'; header.style.alignItems='center';
+      const hTitle = document.createElement('div'); hTitle.innerHTML = `<div style="font-weight:800">${escapeHtml(opts.title||'Modal')}</div>`;
+      const closeBtn = document.createElement('button'); closeBtn.textContent = 'Close'; closeBtn.className='btn-ghost right';
+      header.appendChild(hTitle); header.appendChild(closeBtn);
+      modal.appendChild(header);
+      const body = document.createElement('div'); body.style.marginTop='10px'; body.innerHTML = contentHTML;
+      modal.appendChild(body);
+      back.appendChild(modal);
+      document.getElementById('modals').appendChild(back);
+      function close(){ back.remove(); }
+      closeBtn.addEventListener('click', close);
+      back.addEventListener('click', (e)=> { if (e.target === back) close(); });
+      if (opts.onOpen) setTimeout(()=>opts.onOpen(), 60);
+      return {close};
+    }
+
+    // ---------------------------
+    // Small utils
+    // ---------------------------
+    function numberWithCommas(x){ if (x===null||x===undefined) return ''; return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+    function escapeHtml(s){ if (s===null||s===undefined) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function debounce(fn, wait=200){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), wait); }; }
+    function shuffle(arr){ const a = arr.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+    // init
+    init();
+
+    // Expose some things to console for convenience
+    window.app = {
+      recipes, machines, items, openRecipeDetail, showItemInfoModal
+    };
+  // --- New helper for animations ---
+  function fadeIn(element) {
+    element.style.opacity = 0;
+    element.style.transition = 'opacity 0.3s ease-in-out';
+    requestAnimationFrame(() => {
+      element.style.opacity = 1;
+    });
+  }
+
+  // --- Rerender list when mode changes ---
+  searchMode.addEventListener('change', () => {
+    const mode = searchMode.value;
+    searchInput.value = '';
+    switch (mode) {
+      case 'recipes':
+        renderRecipeList(recipes);
+        break;
+      case 'items':
+        renderItemList(items);
+        break;
+      case 'machines':
+        renderMachineList(machines);
+        break;
+    }
+    detail.style.display = 'none';
+  });
+
+  // --- Render recipes with output in header and machine in subtext ---
+  function renderRecipeList(list) {
+    if (!list.length) {
+      listArea.innerHTML = '<div class="small">No recipes to show.</div>';
+      return;
+    }
+    const frag = document.createDocumentFragment();
+    list.forEach((r, idx) => {
+      const el = document.createElement('div');
+      el.className = 'list-item';
+      // Get outputs for header (can be multiple outputs)
+      const outputs = (r.outputs || '').split(/;\s*/).map(o => o.trim()).filter(Boolean);
+      const headerText = outputs.join(', ') || 'Unknown Output';
+      const inputs = (r.inputs || '').split(/;\s*/).map(i => i.trim()).filter(Boolean).join(', ');
+      const methodText = `Inputs: ${inputs} | Machine: ${r.machine || 'Unknown'}`;
+
+
+      el.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1">
+            <div style="font-weight:700">${escapeHtml(headerText)}</div>
+            <div class="small" style="margin-top:4px;color:var(--muted)">${escapeHtml(methodText)}</div>
+          </div>
+          <div class="pill">#${idx + 1}</div>
+        </div>
+      `;
+      el.addEventListener('click', () => openRecipeDetail(r));
+      frag.appendChild(el);
+    });
+    listArea.innerHTML = '';
+    listArea.appendChild(frag);
+    fadeIn(listArea);
+  }
+
+  // --- Render item list ---
+  function renderItemList(list) {
+    if (!list.length) {
+      listArea.innerHTML = '<div class="small">No items to show.</div>';
+      return;
+    }
+    const frag = document.createDocumentFragment();
+    list.forEach((it, idx) => {
+      const el = document.createElement('div');
+      el.className = 'list-item';
+      const sellVal = parseSellValue(it.sellValue);
+      el.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px">
+            <img src="Images/${sanitizeName(it.title)}.png" class="thumb" onerror="this.style.display='none'"/>
+            <div style="flex:1"><div style="font-weight:700">${escapeHtml(it.title)}</div>
+            <div class="small" style="margin-top:4px;color:var(--muted)">Base Sell Value: ${numberWithCommas(sellVal)} mamybucks</div>
+          </div>
+          <div class="pill">#${idx + 1}</div>
+        </div>
+      `;
+      el.addEventListener('click', () => showItemInfoModal(it.title));
+      frag.appendChild(el);
+    });
+    listArea.innerHTML = '';
+    listArea.appendChild(frag);
+    fadeIn(listArea);
+  }
+
+  // --- Render machine list ---
+  function renderMachineList(list) {
+    if (!list.length) {
+      listArea.innerHTML = '<div class="small">No machines to show.</div>';
+      return;
+    }
+    const frag = document.createDocumentFragment();
+    list.forEach((m, idx) => {
+      const el = document.createElement('div');
+      el.className = 'list-item';
+      el.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1">
+            <div style="font-weight:700">${escapeHtml(m.Title)}</div>
+            <div class="small" style="margin-top:4px;color:var(--muted)">${escapeHtml(m.Description || '')}</div>
+          </div>
+          <div class="pill">#${idx + 1}</div>
+        </div>
+      `;
+      el.addEventListener('click', () => showMachineModal(m.Title));
+      frag.appendChild(el);
+    });
+    listArea.innerHTML = '';
+    listArea.appendChild(frag);
+    fadeIn(listArea);
+  }
+
+  // --- Modified doSearch to filter based on mode and search input ---
+  function doSearch(q, mode) {
+    q = q.toLowerCase();
+    if (!q) {
+      // show all immediately depending on mode
+      switch (mode) {
+        case 'recipes':
+          renderRecipeList(recipes);
+          break;
+        case 'items':
+          renderItemList(items);
+          break;
+        case 'machines':
+          renderMachineList(machines);
+          break;
+      }
+      detail.style.display = 'none';
+      return;
+    }
+
+    switch (mode) {
+      case 'recipes':
+        const filteredRecipes = recipes.filter(r => {
+          const text = `${r.inputs || ''} ${r.outputs || ''} ${r.machine || ''}`.toLowerCase();
+          return text.includes(q);
+        });
+        renderRecipeList(filteredRecipes);
+        break;
+      case 'items':
+        const filteredItems = items.filter(it => (it.title || '').toLowerCase().includes(q));
+        renderItemList(filteredItems);
+        break;
+      case 'machines':
+        const filteredMachines = machines.filter(m => ((m.Title || '') + (m.Description || '')).toLowerCase().includes(q));
+        renderMachineList(filteredMachines);
+        break;
+    }
+    detail.style.display = 'none';
+  }
+
+  // --- Escape HTML helper ---
+  function escapeHtml(text) {
+    if (!text) return '';
+    return text.replace(/[&<>"']/g, m => ({
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":'&#39;'
+    })[m]);
+  }
+
+  // --- Number formatting helper ---
+  function numberWithCommas(x) {
+    if (typeof x === 'undefined' || x === null) return '0';
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  // --- Override init to render all recipes on load ---
+  async function init() {
+    const [r, m, it] = await Promise.all([
+      loadJSON(FILE_RECIPES),
+      loadJSON(FILE_MACHINES),
+      loadJSON(FILE_ITEMS)
+    ]);
+    recipes = Array.isArray(r) ? r : [];
+    machines = Array.isArray(m) ? m : [];
+    items = Array.isArray(it) ? it : [];
+
+    countsRecipes.textContent = `Recipes: ${recipes.length}`;
+    countsItems.textContent = `Items: ${items.length}`;
+    countsMachines.textContent = `Machines: ${machines.length}`;
+
+    // Show all recipes by default on load
+    renderRecipeList(recipes);
+    setupHandlers();
+  }
+
+  // Call init
+  init();
+
+</script>
+</body>
+</html>
