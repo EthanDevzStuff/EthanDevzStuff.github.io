@@ -236,7 +236,6 @@
       globalSearch.addEventListener('input', debounce(updateFilter, 250));
       searchBtn.addEventListener('click', () => doSearch(searchInput.value.trim(), searchMode.value));
       searchInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') doSearch(searchInput.value.trim(), searchMode.value); });
-      // quizBtn.addEventListener('click', () => startQuiz());
       btnRandom.addEventListener('click', () => showRandomRecipe());
       btnShowLeaderboard.addEventListener('click', () => showLeaderboardModal());
       document.getElementById('vcCalc').addEventListener('click', valveControlCalc);
