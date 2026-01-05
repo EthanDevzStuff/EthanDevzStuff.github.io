@@ -92,7 +92,7 @@
         .sys-tag::before { content: ''; width: 8px; height: 8px; background: var(--primary); border-radius: 50%; animation: pulse 2s infinite; }
         .hero h1 { font-size: clamp(3.5rem, 8vw, 8rem); font-weight: 800; line-height: 0.9; letter-spacing: -0.04em; margin-bottom: 40px; }
         .hero h1 span { -webkit-text-stroke: 1px rgba(255,255,255,0.3); color: transparent; position: relative; }
-        .hero h1 span::after { content: 'future.'; position: absolute; left: 0; top: 0; color: var(--primary); clip-path: inset(0 0 0 0); animation: glitch 4s infinite alternate-reverse; }
+        .hero h1 span::after { content: 'future.'; position: absolute; left: 0; top: 0; color: var(--primary); clip-path: inset(0 0 0 0); animation: glitch 4s infinite alternate-reverse; padding-top: 10px; }
         .hero p { max-width: 600px; font-size: 1.25rem; color: var(--text-2); margin-bottom: 50px; }
         
         .hero-controls { display: flex; gap: 20px; }
@@ -219,6 +219,12 @@
             .modal-visual { height: 250px; }
             .terminal { display: none; }
         }
+
+        @keyframes marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); } /* scroll left half the width if you duplicated content */
+        }
+
     </style>
 </head>
 <body>
@@ -238,8 +244,6 @@
         </a>
         <div class="nav-menu">
             <a href="#production" class="nav-link inter-hov">Production</a>
-            <a href="#analytics" class="nav-link inter-hov">Telemetry</a>
-            <a href="#repository" class="nav-link inter-hov">Vault</a>
             <a href="#contact" class="nav-link inter-hov">Connect</a>
         </div>
     </nav>
@@ -249,7 +253,8 @@
         <header class="hero">
             <div class="sys-tag">ethandevz: v1 // stable</div>
             <h1>Developing for the<br><span>future.</span></h1>
-            <p>Hey, im a passionate roblox programmer. Im fluent in Lua, LuaU and Python. I develop multiple projects with these, you can check some out below.</p>
+            <p>Hey. I am a passionate roblox programmer. I'm fluent in Lua, LuaU and Python.</p>
+            <p>I develop multiple projects, you can check some out below.</p>
             
             <div class="hero-controls">
                 <a href="#production" class="btn btn-ghost inter-hov">View Projects</a>
@@ -528,14 +533,39 @@
            ENGINE: MARQUEE
            ------------------------------------------------------------------ */
         const track = document.getElementById('marquee-track');
-        // Duplicate for infinite scroll
-        const allVouches = [...VOUCHES, ...VOUCHES, ...VOUCHES, ...VOUCHES]; 
-        allVouches.forEach(v => {
-            const el = document.createElement('div');
-            el.className = 'vouch';
-            el.innerHTML = `"${v.t}" <span>${v.a} // ${v.r}</span>`;
-            track.appendChild(el);
-        });
+
+        // Function to calculate how many times to duplicate VOUCHES
+        function fillTrack() {
+            // Clear previous content
+            track.innerHTML = '';
+
+            // Create one element per vouch
+            const vouchEls = VOUCHES.map(v => {
+                const el = document.createElement('div');
+                el.className = 'vouch';
+                el.innerHTML = `"${v.t}" <span>${v.a} // ${v.r}</span>`;
+                return el;
+            });
+
+            // Add at least one copy so we can measure
+            vouchEls.forEach(el => track.appendChild(el));
+
+            // Calculate track width vs container width
+            const containerWidth = track.parentElement.offsetWidth;
+            let trackWidth = track.scrollWidth;
+
+            // Keep duplicating until track width is at least 2x container (for smooth -50% scroll)
+            while (trackWidth < containerWidth * 2) {
+                vouchEls.forEach(el => {
+                    const clone = el.cloneNode(true);
+                    track.appendChild(clone);
+                });
+                trackWidth = track.scrollWidth;
+            }
+        }
+
+        fillTrack();
+
 
         /* ------------------------------------------------------------------
            INIT
