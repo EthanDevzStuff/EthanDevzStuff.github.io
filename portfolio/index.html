@@ -54,8 +54,10 @@
 
         /* Background FX */
         #canvas-plexus { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        #canvas-webgl { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; opacity: 0.4; }
         .noise-overlay { position: fixed; inset: 0; background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MDAiIGhlaWdodD0iNTAwIj48ZmlsdGVyIGlkPSJnoiPjGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuNjUiIG51bU9jdGF2ZXM9IjMiIHN0aXRjaFRpbGVzPSJzdGl0Y2giLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgjZykiIG9wYWNpdHk9IjAuMDUiLz48L3N2Zz4='); opacity: 0.4; z-index: 1; pointer-events: none; }
-        .scanlines { position: fixed; inset: 0; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2)); background-size: 100% 4px; z-index: 2; pointer-events: none; opacity: 0.15; }
+        .scanlines { position: fixed; inset: 0; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1)); background-size: 100% 4px; z-index: 2; pointer-events: none; opacity: 0.1; }
+        .vignette { position: fixed; inset: 0; background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.8) 120%); z-index: 3; pointer-events: none; }
 
         /* Cursor */
         #c-dot { width: 6px; height: 6px; background: var(--primary); position: fixed; top: 0; left: 0; border-radius: 50%; z-index: 9999; pointer-events: none; transform: translate(-50%, -50%); transition: transform 0.1s; }
@@ -271,6 +273,7 @@
 <body>
 
     <canvas id="canvas-plexus"></canvas>
+    <canvas id="canvas-webgl"></canvas>
     <div class="noise-overlay"></div>
     <div class="scanlines"></div>
     
@@ -638,6 +641,7 @@
 
     <div class="sys-logs" id="log-feed"></div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         const PROJECTS = {
             game1: {
@@ -811,27 +815,108 @@
                 points.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, size: Math.random() * 2 });
             }
         }
-        function drawPlexus() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary');
-            for(let i=0; i<points.length; i++) {
-                let p = points[i];
-                p.x += p.vx; p.y += p.vy;
-                if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
-                if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
-                ctx.globalAlpha = 0.5; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
-                for(let j=i+1; j<points.length; j++) {
-                    let p2 = points[j];
-                    let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
-                    if(dist < 150) {
-                        ctx.globalAlpha = 0.1 * (1 - dist / 150);
-                        ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary');
-                        ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
-                    }
-                }
+
+        function initWebGL() {
+            const canvas = document.getElementById('canvas-webgl');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            const geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
+            const material = new THREE.MeshBasicMaterial({ color: 0x00ffa3, wireframe: true, transparent: true, opacity: 0.1 });
+            const knot = new THREE.Mesh(geometry, material);
+            scene.add(knot);
+
+            camera.position.z = 30;
+
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                const currentHue = getComputedStyle(document.documentElement).getPropertyValue('--hue').trim();
+                knot.material.color.setHSL(currentHue / 360, 1, 0.5);
+                
+                knot.rotation.x += 0.002;
+                knot.rotation.y += 0.002;
+                renderer.render(scene, camera);
             }
-            requestAnimationFrame(drawPlexus);
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
         }
+
+        function drawPlexus() {
+            const canvas = document.getElementById('canvas-plexus');
+            const ctx = canvas.getContext('2d');
+
+            let points = [];
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            function init() {
+                resize();
+
+                points = Array.from({ length: 100 }, () => ({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5
+                }));
+
+                window.addEventListener('resize', resize);
+                draw();
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const color = getComputedStyle(document.documentElement)
+                    .getPropertyValue('--primary')
+                    .trim();
+
+                ctx.fillStyle = color;
+                ctx.strokeStyle = color;
+
+                points.forEach((p, i) => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+                    ctx.globalAlpha = 0.5;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    for (let j = i + 1; j < points.length; j++) {
+                        const p2 = points[j];
+                        const d = Math.hypot(p.x - p2.x, p.y - p2.y);
+
+                        if (d < 150) {
+                            ctx.globalAlpha = (1 - d / 150) * 0.15;
+                            ctx.lineWidth = 1;
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.stroke();
+                        }
+                    }
+                });
+
+                requestAnimationFrame(draw);
+            }
+
+            init();
+        }
+
 
         const modal = document.getElementById('modal');
         const modalContact = document.getElementById('modal-contact');
@@ -946,7 +1031,7 @@
             if(window.scrollY > 1500) triggerAchievement('Time Traveler');
         });
         window.addEventListener('resize', initPlexus);
-        initPlexus(); drawPlexus();
+        initPlexus(); drawPlexus(); initWebGL();
 
         const codeContent = document.querySelector('.code-content');
 
@@ -970,41 +1055,6 @@
             }
         }
 
-
-    const possibleFiles = ['game.py', 'DataHandler.lua', 'SecureRemote.lua', 'init.server.lua'];
-
-    async function initAutoRepo() {
-        const fileListContainer = document.querySelector('.file-list');
-        const codeDisplay = document.getElementById('code-display');
-        const tabNameDisplay = document.getElementById('tab-name');
-        fileListContainer.innerHTML = '';
-        for (const file of possibleFiles) {
-            try {
-                const response = await fetch(`./code/${file}`);
-                if (response.ok) {
-                    const item = document.createElement('div');
-                    item.className = 'file-item inter-hov';
-                    const isPy = file.endsWith('.py');
-                    item.innerHTML = `<div class="file-icon" style="color:${isPy ? '#3776ab' : 'var(--primary)'}"></div> ${file}`;
-                    item.onclick = async () => {
-                        try {
-                            const contentRes = await fetch(`./code/${file}`);
-                            const text = await contentRes.text();
-                            codeDisplay.innerHTML = highlightCode(text);
-                            tabNameDisplay.innerHTML = `<div class="file-icon" style="color:var(--primary); width:10px;"></div> ${file}`;
-                            document.querySelectorAll('.file-item').forEach(el => el.classList.remove('active'));
-                            item.classList.add('active');
-                            logEvent('INSPECT_CODE', file);
-                            SoundSys.play(800, 'sine', 0.05);
-                        } catch (err) {}
-                    };
-                    fileListContainer.appendChild(item);
-                    if (fileListContainer.children.length === 1) item.click();
-                }
-            } catch (e) {}
-        }
-    }
-    initAutoRepo();
     </script>
 </body>
 </html>
