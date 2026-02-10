@@ -3,17 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EthanDevz // Senior Roblox Engineer</title>
+    <title>EthanDevz // Senior Programmer</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* * =========================================
-         * CORE VARIABLES & RESET
-         * =========================================
-         */
         :root {
             --hue: 220;
             --sat: 100%;
@@ -68,7 +64,6 @@
             position: relative;
         }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-deep); }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
@@ -79,10 +74,6 @@
             color: var(--primary);
         }
 
-        /* * =========================================
-         * UTILITY CLASSES
-         * =========================================
-         */
         .u-container {
             max-width: 1280px;
             margin: 0 auto;
@@ -103,10 +94,6 @@
         
         .inter-hov { cursor: none; } 
 
-        /* * =========================================
-         * BACKGROUND FX
-         * =========================================
-         */
         #canvas-bg {
             position: fixed;
             top: 0;
@@ -139,10 +126,6 @@
             mask-image: radial-gradient(circle at center, black, transparent 80%);
         }
 
-        /* * =========================================
-         * CUSTOM CURSOR
-         * =========================================
-         */
         #cursor-dot {
             width: 6px;
             height: 6px;
@@ -179,10 +162,6 @@
             backdrop-filter: blur(2px);
         }
 
-        /* * =========================================
-         * NAVIGATION
-         * =========================================
-         */
         .navbar {
             position: fixed;
             top: 0;
@@ -258,10 +237,6 @@
         .nav-item:hover { color: #fff; }
         .nav-item:hover::after { width: 100%; }
 
-        /* * =========================================
-         * HERO SECTION
-         * =========================================
-         */
         .hero {
             min-height: 100vh;
             display: flex;
@@ -386,10 +361,6 @@
             border-color: #fff;
         }
 
-        /* * =========================================
-         * TERMINAL UI
-         * =========================================
-         */
         .terminal-wrapper {
             position: relative;
             z-index: 10;
@@ -460,10 +431,6 @@
         .line.warn { color: #f59e0b; }
         .line.log { color: var(--text-2); }
 
-        /* * =========================================
-         * PROJECT FILTER & SEARCH
-         * =========================================
-         */
         .project-controls {
             display: flex;
             justify-content: space-between;
@@ -525,10 +492,6 @@
             border-color: var(--primary);
         }
 
-        /* * =========================================
-         * PROJECT BENTO GRID (UPGRADED)
-         * =========================================
-         */
         .bento-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -631,10 +594,6 @@
 
         .span-2 { grid-column: span 2; }
 
-        /* * =========================================
-         * SKILLS SECTION (NEW)
-         * =========================================
-         */
         .skills-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -676,10 +635,6 @@
             transition: 1.5s var(--ease-smooth);
         }
 
-        /* * =========================================
-         * EXPERIENCE TIMELINE (NEW)
-         * =========================================
-         */
         .exp-list {
             position: relative;
             padding-left: 32px;
@@ -723,10 +678,6 @@
         .exp-studio { color: var(--primary); font-weight: 600; margin-bottom: 12px; display: block; }
         .exp-desc { color: var(--text-2); font-size: 0.95rem; }
 
-        /* * =========================================
-         * REPLACED PRICING (COLLABORATION)
-         * =========================================
-         */
         .collab-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -753,10 +704,6 @@
             display: block;
         }
 
-        /* * =========================================
-         * FOOTER & MODALS
-         * =========================================
-         */
         footer {
             margin-top: 120px;
             padding: 80px 0;
@@ -779,7 +726,6 @@
         }
         .f-link:hover { color: #fff; }
 
-        /* Modal */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -1142,11 +1088,6 @@
     </div>
 
     <script>
-        /**
-         * ------------------------------------------------------------------
-         * DATA MANAGEMENT
-         * ------------------------------------------------------------------
-         */
         const PROJECTS = [
             {
                 id: 'blox',
@@ -1202,11 +1143,6 @@
             }
         ];
 
-        /**
-         * ------------------------------------------------------------------
-         * TERMINAL ENGINE
-         * ------------------------------------------------------------------
-         */
         class TerminalEngine {
             constructor(containerId) {
                 this.container = document.getElementById(containerId);
@@ -1240,11 +1176,6 @@
 
         }
 
-        /**
-         * ------------------------------------------------------------------
-         * CORE UI LOGIC
-         * ------------------------------------------------------------------
-         */
         function renderProjects(filter = 'all', search = '') {
             const grid = document.getElementById('project-list');
             grid.innerHTML = '';
@@ -1302,7 +1233,6 @@
             document.getElementById('proj-modal').classList.remove('active');
         }
 
-        // Stats Animation
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -1324,18 +1254,12 @@
             });
         }, { threshold: 0.5 });
 
-        /**
-         * ------------------------------------------------------------------
-         * INITIALIZATION
-         * ------------------------------------------------------------------
-         */
         window.addEventListener('DOMContentLoaded', () => {
             new TerminalEngine('term-out');
             renderProjects();
             
             document.querySelectorAll('.h-stat-item span').forEach(s => observer.observe(s));
 
-            // Filtering
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -1344,13 +1268,11 @@
                 });
             });
 
-            // Search
             document.getElementById('proj-search').addEventListener('input', (e) => {
                 const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
                 renderProjects(activeFilter, e.target.value);
             });
 
-            // Custom Cursor
             const dot = document.getElementById('cursor-dot');
             const ring = document.getElementById('cursor-ring');
             window.addEventListener('mousemove', (e) => {
@@ -1367,31 +1289,23 @@
                 el.addEventListener('mouseleave', () => document.body.classList.remove('is-hovering'));
             });
 
-            // Navbar Scroll
             window.addEventListener('scroll', () => {
                 const nav = document.querySelector('.navbar');
                 if (window.scrollY > 50) nav.classList.add('scrolled');
                 else nav.classList.remove('scrolled');
             });
 
-            // Clock
             const updateClock = () => {
                 document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
             };
             setInterval(updateClock, 1000); updateClock();
         });
 
-        // Copy Discord
         function copyDiscord() {
             navigator.clipboard.writeText("ethanmracing");
             alert("Discord ID copied to clipboard!");
         }
 
-        /**
-         * ------------------------------------------------------------------
-         * CANVAS PARTICLE SYSTEM
-         * ------------------------------------------------------------------
-         */
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
         let width, height, particles = [];
