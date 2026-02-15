@@ -1098,7 +1098,7 @@
                 title: "Blox Channel",
                 role: "Lead Programmer & Development Manager",
                 category: "Backend",
-                desc: "A ground-up architectural rewrite for a 5M+ visit roleplay experience. Developed a custom state machine for server management and migrated legacy systems to the Knit framework.",
+                desc: "A ground-up architectural rewrite for a 5M+ visit roleplay experience. Developed a custom state machine for server management and migrated legacy systems to updated modular frameworks..",
                 challenges: "Solved severe memory leaks related to nested connections and optimized remote traffic by 40% using custom bit-packing for network packets.",
                 stack: ["Luau", "ProfileService"],
                 systems: ["Modular Inventory", "Data Migration", "Admin Command Engine", "Session Locking"],
@@ -1166,8 +1166,6 @@
             async bootSequence() {
                 await this.addLine("Roblox Engine Runtime v4.2.0-production", "log", 500);
                 await this.addLine("Initializing shared kernel...", "log", 200);
-                await this.addLine("mount /systems/framework/knit", "cmd", 400);
-                await this.addLine("Knit Framework: Successfully started.", "success", 200);
                 await this.addLine("Loading ProfileService partitions...", "log", 300);
                 await this.addLine("[DataStore] Session Locking enabled for 127.0.0.1", "warn", 200);
                 await this.addLine("whoami", "cmd", 800);
