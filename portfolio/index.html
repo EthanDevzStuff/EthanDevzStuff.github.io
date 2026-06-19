@@ -1,1349 +1,371 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="EthanDevz // Senior Roblox Programmer">
-    <meta property="og:description" content="Specializing in large-scale Roblox systems, high-performance backends, and advanced anti-cheat security. View my  portfolio.">
-    <meta property="og:url" content="https://ethandevzstuff.github.io/portfolio/"> <meta name="theme-color" content="#4775ff"> <meta name="twitter:card" content="summary_large_image">
-    <title>EthanDevz // Senior Programmer</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:type" content="website">
+<meta property="og:title" content="EthanDevz // Senior Roblox Programmer">
+<meta property="og:description" content="Specializing in large-scale Roblox systems, high-performance backends, and advanced anti-cheat security. View my  portfolio.">
+<meta property="og:url" content="https://ethandevzstuff.github.io/portfolio/"> <meta name="theme-color" content="#4775ff"> <meta name="twitter:card" content="summary_large_image">
+<title>Ethan - Roblox programmer</title>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --hue: 220;
-            --sat: 100%;
-            --primary: hsl(var(--hue), var(--sat), 60%);
-            --primary-glow: hsla(var(--hue), var(--sat), 60%, 0.4);
-            --primary-dim: hsla(var(--hue), var(--sat), 60%, 0.1);
-            
-            --accent: #10b981; 
-            --danger: #ef4444; 
-            
-            --bg-deep: #020408;
-            --bg-surface: #0a0d14;
-            
-            --glass-bg: rgba(13, 17, 26, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-highlight: rgba(255, 255, 255, 0.12);
-            --glass-blur: blur(20px);
-            
-            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-            
-            --text-1: #ffffff;
-            --text-2: #94a3b8;
-            --text-3: #475569;
-            
-            --ease-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            --ease-smooth: cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            cursor: none; 
-        }
-
-        html {
-            scroll-behavior: smooth;
-            font-size: 16px;
-            background-color: var(--bg-deep);
-            overflow-x: hidden;
-        }
-
-        body {
-            font-family: var(--font-sans);
-            color: var(--text-1);
-            line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
-            position: relative;
-        }
-
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-deep); }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
-
-        ::selection {
-            background: var(--primary-dim);
-            color: var(--primary);
-        }
-
-        .u-container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 24px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .u-flex-center { display: flex; align-items: center; justify-content: center; }
-        .u-flex-between { display: flex; align-items: center; justify-content: space-between; }
-        .u-grid { display: grid; gap: 24px; }
-        
-        .text-gradient {
-            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .inter-hov { cursor: none; } 
-
-        #canvas-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            opacity: 0.4;
-            pointer-events: none;
-        }
-
-        .overlay-vignette {
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle at center, transparent 0%, var(--bg-deep) 120%);
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .overlay-grid {
-            position: fixed;
-            inset: 0;
-            background-image: 
-                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            opacity: 0.5;
-            z-index: 0;
-            pointer-events: none;
-            mask-image: radial-gradient(circle at center, black, transparent 80%);
-        }
-
-        #cursor-dot {
-            width: 6px;
-            height: 6px;
-            background: #fff;
-            position: fixed;
-            top: 0;
-            left: 0;
-            border-radius: 50%;
-            z-index: 10000;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            mix-blend-mode: exclusion;
-        }
-        
-        #cursor-ring {
-            width: 40px;
-            height: 40px;
-            border: 1px solid rgba(255,255,255,0.3);
-            position: fixed;
-            top: 0;
-            left: 0;
-            border-radius: 50%;
-            z-index: 9999;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            transition: width 0.3s, height 0.3s, background 0.3s, border-color 0.3s;
-        }
-
-        body.is-hovering #cursor-ring {
-            width: 60px;
-            height: 60px;
-            background: rgba(255,255,255,0.05);
-            border-color: var(--primary);
-            backdrop-filter: blur(2px);
-        }
-
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 80px;
-            z-index: 5000;
-            transition: all 0.4s var(--ease-smooth);
-            border-bottom: 1px solid transparent;
-        }
-
-        .navbar.scrolled {
-            height: 70px;
-            background: rgba(5, 6, 10, 0.8);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--glass-border);
-        }
-
-        .nav-inner {
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .brand {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #fff;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            letter-spacing: -0.02em;
-        }
-
-        .brand-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--primary), #fff);
-            border-radius: 8px;
-            box-shadow: 0 0 20px var(--primary-dim);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 32px;
-        }
-
-        .nav-item {
-            font-size: 0.85rem;
-            color: var(--text-2);
-            text-decoration: none;
-            font-weight: 500;
-            position: relative;
-            transition: color 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .nav-item::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--primary);
-            transition: width 0.3s var(--ease-smooth);
-        }
-
-        .nav-item:hover { color: #fff; }
-        .nav-item:hover::after { width: 100%; }
-
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            position: relative;
-            padding-top: 80px;
-            overflow: hidden;
-        }
-
-        .hero-grid {
-            display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            align-items: center;
-            gap: 60px;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            border-radius: 100px;
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            color: var(--accent);
-            margin-bottom: 30px;
-            backdrop-filter: blur(4px);
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--accent);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        .hero h1 {
-            font-size: clamp(3rem, 5vw, 4.5rem);
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 24px;
-            letter-spacing: -0.03em;
-        }
-
-        .hero p {
-            font-size: 1.1rem;
-            color: var(--text-2);
-            margin-bottom: 40px;
-            max-width: 540px;
-            line-height: 1.7;
-        }
-
-        .hero-stats {
-            display: flex;
-            gap: 40px;
-            margin-bottom: 40px;
-            padding-top: 20px;
-            border-top: 1px solid var(--glass-border);
-        }
-
-        .h-stat-item span {
-            display: block;
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #fff;
-        }
-
-        .h-stat-item label {
-            font-size: 0.75rem;
-            color: var(--text-3);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .cta-group {
-            display: flex;
-            gap: 16px;
-        }
-
-        .btn {
-            height: 54px;
-            padding: 0 32px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            transition: all 0.3s var(--ease-smooth);
-            cursor: none;
-        }
-
-        .btn-primary {
-            background: #fff;
-            color: #000;
-            box-shadow: 0 10px 20px rgba(255,255,255,0.1);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px rgba(255,255,255,0.2);
-        }
-
-        .btn-glass {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--glass-border);
-            color: #fff;
-            backdrop-filter: blur(10px);
-        }
-
-        .btn-glass:hover {
-            background: rgba(255,255,255,0.08);
-            border-color: #fff;
-        }
-
-        .terminal-wrapper {
-            position: relative;
-            z-index: 10;
-            perspective: 1000px;
-        }
-
-        .terminal-window {
-            width: 100%;
-            max-width: 550px;
-            height: 380px;
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            box-shadow: 
-                0 0 0 1px rgba(255,255,255,0.05) inset,
-                0 50px 100px -20px rgba(0,0,0,0.7);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transform: rotateY(-5deg) rotateX(2deg);
-            transition: transform 0.5s var(--ease-smooth), box-shadow 0.5s;
-        }
-
-        .terminal-window:hover {
-            transform: rotateY(0deg) rotateX(0deg) scale(1.02);
-            box-shadow: 0 60px 120px -20px rgba(0,0,0,0.8);
-            border-color: var(--glass-highlight);
-        }
-
-        .terminal-header {
-            height: 44px;
-            background: rgba(0,0,0,0.2);
-            border-bottom: 1px solid var(--glass-border);
-            display: flex;
-            align-items: center;
-            padding: 0 16px;
-            gap: 8px;
-        }
-
-        .term-dot { width: 12px; height: 12px; border-radius: 50%; }
-        .term-dot.red { background: #ff5f56; border: 1px solid #e0443e; }
-        .term-dot.yellow { background: #ffbd2e; border: 1px solid #dea123; }
-        .term-dot.green { background: #27c93f; border: 1px solid #1aab29; }
-
-        .term-title {
-            margin-left: 12px;
-            font-family: var(--font-mono);
-            font-size: 11px;
-            color: var(--text-3);
-            text-transform: uppercase;
-        }
-
-        .terminal-body {
-            flex: 1;
-            padding: 20px;
-            font-family: var(--font-mono);
-            font-size: 13px;
-            color: #d1d5db;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .line { margin-bottom: 4px; line-height: 1.5; }
-        .line.cmd::before { content: '➜ '; color: var(--primary); }
-        .line.success { color: var(--accent); }
-        .line.warn { color: #f59e0b; }
-        .line.log { color: var(--text-2); }
-
-        .project-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .search-container {
-            position: relative;
-            flex: 1;
-            max-width: 400px;
-        }
-
-        .search-input {
-            width: 100%;
-            height: 48px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 0 20px 0 48px;
-            color: #fff;
-            font-family: var(--font-sans);
-            outline: none;
-            transition: 0.3s;
-        }
-
-        .search-input:focus { border-color: var(--primary); background: rgba(255,255,255,0.06); }
-
-        .search-icon {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-3);
-        }
-
-        .filter-group {
-            display: flex;
-            gap: 12px;
-        }
-
-        .filter-btn {
-            padding: 8px 18px;
-            border-radius: 8px;
-            background: transparent;
-            border: 1px solid var(--glass-border);
-            color: var(--text-2);
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .filter-btn.active {
-            background: var(--primary);
-            color: #000;
-            border-color: var(--primary);
-        }
-
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            auto-rows: 400px;
-            gap: 24px;
-        }
-
-        .bento-item {
-            position: relative;
-            border-radius: 24px;
-            overflow: hidden;
-            border: 1px solid var(--glass-border);
-            background: var(--bg-surface);
-            transition: 0.4s var(--ease-smooth);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .bento-item:hover {
-            border-color: var(--primary);
-            transform: translateY(-8px);
-            box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6);
-        }
-
-        .bento-img-container {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            inset: 0;
-            z-index: 1;
-        }
-
-        .bento-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: 0.6s var(--ease-smooth);
-            opacity: 0.4;
-            filter: grayscale(100%);
-        }
-
-        .bento-item:hover .bento-img {
-            transform: scale(1.1);
-            opacity: 0.2;
-            filter: grayscale(0%);
-        }
-
-        .bento-content {
-            position: relative;
-            z-index: 2;
-            padding: 32px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            background: linear-gradient(to top, rgba(2,4,8,0.9) 0%, transparent 100%);
-        }
-
-        .b-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #fff;
-            margin-bottom: 8px;
-        }
-
-        .b-role {
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-            display: block;
-        }
-
-        .b-desc-short {
-            font-size: 0.9rem;
-            color: var(--text-2);
-            margin-bottom: 20px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .tag-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .mini-tag {
-            font-size: 0.65rem;
-            padding: 4px 8px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--glass-border);
-            border-radius: 4px;
-            color: var(--text-2);
-        }
-
-        .span-2 { grid-column: span 2; }
-
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-        }
-
-        .skill-category h4 {
-            font-size: 1.25rem;
-            margin-bottom: 24px;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .skill-item { margin-bottom: 20px; }
-        
-        .skill-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-        }
-
-        .skill-name { font-size: 0.9rem; font-weight: 600; color: var(--text-2); }
-        .skill-val { font-family: var(--font-mono); font-size: 0.8rem; color: var(--primary); }
-
-        .skill-bar-bg {
-            height: 6px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .skill-bar-fill {
-            height: 100%;
-            background: var(--primary);
-            box-shadow: 0 0 10px var(--primary-glow);
-            width: 0;
-            transition: 1.5s var(--ease-smooth);
-        }
-
-        .exp-list {
-            position: relative;
-            padding-left: 32px;
-        }
-
-        .exp-list::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 1px;
-            background: var(--glass-border);
-        }
-
-        .exp-item {
-            position: relative;
-            margin-bottom: 48px;
-        }
-
-        .exp-item::before {
-            content: '';
-            position: absolute;
-            left: -36px;
-            top: 6px;
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            background: var(--primary);
-            box-shadow: 0 0 10px var(--primary);
-        }
-
-        .exp-date {
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            color: var(--text-3);
-            margin-bottom: 8px;
-        }
-
-        .exp-title { font-size: 1.25rem; font-weight: 700; color: #fff; }
-        .exp-studio { color: var(--primary); font-weight: 600; margin-bottom: 12px; display: block; }
-        .exp-desc { color: var(--text-2); font-size: 0.95rem; }
-
-        .collab-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-        }
-
-        .collab-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            padding: 40px;
-            border-radius: 24px;
-            text-align: center;
-            transition: 0.3s;
-        }
-
-        .collab-card:hover {
-            border-color: var(--primary);
-            background: rgba(255,255,255,0.02);
-        }
-
-        .collab-icon {
-            font-size: 2.5rem;
-            margin-bottom: 24px;
-            display: block;
-        }
-
-        footer {
-            margin-top: 120px;
-            padding: 80px 0;
-            border-top: 1px solid var(--glass-border);
-            background: #000;
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 40px;
-        }
-
-        .f-link {
-            display: block;
-            color: var(--text-3);
-            margin-bottom: 12px;
-            text-decoration: none;
-            transition: 0.2s;
-        }
-        .f-link:hover { color: #fff; }
-
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.9);
-            backdrop-filter: blur(12px);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: 0.4s;
-        }
-
-        .modal-overlay.active { opacity: 1; pointer-events: all; }
-
-        .modal-card {
-            width: 90%;
-            max-width: 1000px;
-            max-height: 90vh;
-            background: #0a0d14;
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 0;
-            position: relative;
-            transform: scale(0.9);
-            transition: 0.4s var(--ease-elastic);
-            overflow-y: auto;
-        }
-
-        .modal-overlay.active .modal-card { transform: scale(1); }
-
-        .modal-hero {
-            width: 100%;
-            height: 300px;
-            background: var(--bg-deep);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .modal-body { padding: 48px; }
-
-        .close-modal {
-            position: absolute;
-            top: 24px;
-            right: 24px;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            z-index: 100;
-        }
-
-        @keyframes pulse { 
-            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); } 
-            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); } 
-            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } 
-        }
-
-        @media (max-width: 1024px) {
-            .hero-grid { grid-template-columns: 1fr; text-align: center; }
-            .hero-content { display: flex; flex-direction: column; align-items: center; }
-            .terminal-wrapper { display: none; }
-            .bento-grid { grid-template-columns: 1fr; auto-rows: 350px; }
-            .span-2 { grid-column: span 1; }
-            .collab-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --paper: #15161a;
+    --paper-raised: #1c1e23;
+    --ink: #ece9e2;
+    --ink-soft: #9b9a9c;
+    --ink-faint: #65656a;
+    --line: #303236;
+    --rust: #8fb4ac;
+    --olive: #b08a5a;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,h2,h3,.disp{ font-family:'Archivo', sans-serif; }
+
+  .wrap{ max-width: 740px; margin:0 auto; padding: 0 26px; }
+
+  a{ color: var(--rust); text-decoration: none; }
+  a:hover{ text-decoration: underline; }
+
+  header{ padding: 38px 0 0; }
+  .header-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding-bottom: 22px; border-bottom: 1px solid var(--line);
+    font-size: 14px; color: var(--ink-soft);
+  }
+  .header-row .name{ font-weight:600; color: var(--ink); }
+  .header-row nav{ display:flex; gap:22px; }
+  .header-row nav a{ color: var(--ink-soft); }
+  .header-row nav a:hover{ color: var(--rust); }
+
+  .hero{ padding: 54px 0 20px; }
+  .kicker{
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--rust);
+    font-weight: 600;
+    margin: 0 0 16px;
+  }
+  h1{
+    font-size: 38px;
+    line-height: 1.22;
+    font-weight: 700;
+    margin: 0 0 20px;
+    max-width: 560px;
+    letter-spacing: -0.3px;
+  }
+  .lede{
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    max-width: 520px;
+    margin: 0 0 30px;
+  }
+  .lede b{ color: var(--ink); font-weight: 600; }
+
+  .hero-actions{ display:flex; gap: 14px; flex-wrap: wrap; align-items:center; }
+  .btn{
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-size: 14.5px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid var(--ink);
+  }
+  .btn-fill{
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .btn-fill:hover{ background:#cfcbc0; text-decoration:none; }
+  .btn-line{
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--line);
+  }
+  .btn-line:hover{ border-color: var(--ink); text-decoration:none; }
+
+  .strip{ margin-top: 10px; padding: 26px 0 40px; }
+  .strip-track{
+    position: relative;
+    display:flex;
+    justify-content: space-between;
+    padding: 0 4px;
+  }
+  .strip-track::before{
+    content:"";
+    position:absolute;
+    top: 6px; left: 4px; right: 4px;
+    height: 1.5px;
+    background: var(--line);
+  }
+  .strip-point{
+    position: relative;
+    z-index: 1;
+    display:flex; flex-direction:column; align-items:flex-start;
+    max-width: 150px;
+  }
+  .strip-point .dot{
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 2px solid var(--rust);
+    margin-bottom: 14px;
+  }
+  .strip-point:nth-child(2) .dot{ border-color: var(--olive); }
+  .strip-point:nth-child(3) .dot{ border-color: var(--ink); background: var(--ink); }
+  .strip-point .when{ font-size: 12px; color: var(--ink-faint); margin-bottom: 4px; font-weight: 500; }
+  .strip-point .what{ font-size: 14px; color: var(--ink); font-weight: 600; line-height: 1.4; }
+
+  section{ padding: 50px 0; border-top: 1px solid var(--line); }
+  .section-label{
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  h2{ font-size: 24px; font-weight: 700; margin: 0 0 30px; letter-spacing: -0.2px; }
+
+  .project{ padding: 28px 0; border-top: 1px solid var(--line); }
+  .project:first-of-type{ border-top: none; padding-top: 0; }
+
+  .project-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    gap: 16px; flex-wrap: wrap; margin-bottom: 6px;
+  }
+  .project-name{ font-family:'Archivo', sans-serif; font-size: 21px; font-weight: 700; margin:0; }
+  .project-meta{ font-size: 13.5px; color: var(--ink-faint); }
+  .project-stat{ font-size: 13.5px; color: var(--rust); font-weight: 600; }
+
+  .project-body{ margin-top: 14px; }
+  .project-desc{ font-size: 15.5px; line-height: 1.75; color: var(--ink-soft); margin: 0 0 14px; }
+  .project-tags{ display:flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
+  .tag{
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 4px 10px;
+  }
+  .project-link{ font-size: 14px; font-weight: 600; }
+
+  .skills-list{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--line);
+  }
+  .skills-col{
+    padding: 20px 18px 4px 18px;
+    border-right: 1px solid var(--line);
+  }
+  .skills-col:last-child{ border-right: none; padding-left:18px; }
+  .skills-col:first-child{ padding-left:0; }
+  .skills-col h3{ font-size: 14px; margin: 0 0 12px; font-weight: 600; color: var(--ink-soft); }
+  .skills-col ul{ list-style:none; margin:0; padding:0; }
+  .skills-col li{ font-size: 14.5px; padding: 6px 0; color: var(--ink); }
+
+  .contact{ display:flex; justify-content:space-between; align-items:flex-end; flex-wrap: wrap; gap: 20px; }
+  .contact h2{ margin-bottom: 10px; }
+  .contact p{ font-size: 15.5px; color: var(--ink-soft); max-width: 380px; margin:0; line-height:1.6; }
+  .discord-tag{
+    font-family:'Archivo', sans-serif;
+    font-size: 17px; font-weight: 600;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    padding: 12px 22px;
+    white-space: nowrap;
+  }
+
+  footer{
+    padding: 28px 0 50px;
+    color: var(--ink-faint);
+    font-size: 13px;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+    border-top: 1px solid var(--line);
+  }
+
+  @media (max-width: 580px){
+    h1{ font-size: 30px; }
+    .header-row nav{ display:none; }
+    .skills-list{ grid-template-columns: 1fr; }
+    .skills-col{ border-right:none; border-bottom: 1px solid var(--line); padding: 18px 0; }
+    .skills-col:last-child{ border-bottom:none; padding-left:0; }
+  }
+</style>
 </head>
 <body>
 
-    <canvas id="canvas-bg"></canvas>
-    <div class="overlay-grid"></div>
-    <div class="overlay-vignette"></div>
+  <header>
+    <div class="wrap header-row">
+      <span class="name">Ethan</span>
+      <nav>
+        <a href="#work">work</a>
+        <a href="#skills">skills</a>
+        <a href="#contact">contact</a>
+      </nav>
+    </div>
+  </header>
 
-    <div id="cursor-dot"></div>
-    <div id="cursor-ring"></div>
-
-    <nav class="navbar">
-        <div class="u-container nav-inner">
-            <a href="#" class="brand inter-hov">
-                <div class="brand-icon"></div>
-                EthanDevz
-            </a>
-            <div class="nav-links">
-                <a href="#projects" class="nav-item inter-hov">Portfolio</a>
-                <a href="#experience" class="nav-item inter-hov">Career</a>
-                <a href="#skills" class="nav-item inter-hov">Tech Stack</a>
-                <a href="#contact" class="nav-item inter-hov">Hire Me</a>
-            </div>
-        </div>
-    </nav>
-
-    <main>
-        
-        <section class="hero">
-            <div class="u-container hero-grid">
-                <div class="hero-content">
-                    <div class="status-badge">
-                        <div class="status-dot"></div>
-                        AVAILABLE FOR HIRING
-                    </div>
-                    <h1>Roblox Programmer<br><span class="text-gradient">Changing Worlds.</span></h1>
-                    <p>
-                        Specalizing in Roblox front-end and back-end, I developed major anti-cheats and focused on player experiences, not if it worked one time.
-                    </p>
-                    
-                    <div class="hero-stats">
-                        <div class="h-stat-item">
-                            <span data-target="5">0+</span>
-                            <label>Years Exp</label>
-                        </div>
-                        <div class="h-stat-item">
-                            <span data-target="15">0+</span>
-                            <label>Large Scale Systems</label>
-                        </div>
-                        <div class="h-stat-item">
-                            <span data-target="10">0+</span>
-                            <label>Total Visits (M)</label>
-                        </div>
-                    </div>
-
-                    <div class="cta-group">
-                        <a href="#projects" class="btn btn-primary inter-hov">Explore Systems</a>
-                        <a href="#contact" class="btn btn-glass inter-hov">Discuss Collaboration</a>
-                    </div>
-                </div>
-
-                <div class="terminal-wrapper inter-hov">
-                    <div class="terminal-window">
-                        <div class="terminal-header">
-                            <div class="term-dot red"></div>
-                            <div class="term-dot yellow"></div>
-                            <div class="term-dot green"></div>
-                            <span class="term-title">log</span>
-                        </div>
-                        <div class="terminal-body" id="term-out"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="projects" style="padding: 100px 0;">
-            <div class="u-container">
-                <div class="section-header">
-                    <span class="section-tag">Engineering Portfolio</span>
-                    <h2 class="section-title">Production Systems</h2>
-                    <p style="color:var(--text-2); margin-bottom: 40px;">Deep-dive into the technical architecture of my previous work.</p>
-                </div>
-
-                <div class="project-controls">
-                    <div class="search-container">
-                        <span class="search-icon">🔍</span>
-                        <input type="text" id="proj-search" class="search-input" placeholder="Search by tech or system...">
-                    </div>
-                    <div class="filter-group">
-                        <button class="filter-btn active" data-filter="all">All</button>
-                        <button class="filter-btn" data-filter="Backend">Backend</button>
-                        <button class="filter-btn" data-filter="Security">Security</button>
-                        <button class="filter-btn" data-filter="Optimization">Optimization</button>
-                    </div>
-                </div>
-
-                <div class="bento-grid" id="project-list">
-                    </div>
-            </div>
-        </section>
-
-        <section id="experience" style="padding: 100px 0; background: rgba(255,255,255,0.01);">
-            <div class="u-container">
-                <div class="u-grid" style="grid-template-columns: 1fr 1fr; gap: 80px;">
-                    <div>
-                        <span class="section-tag">Career Path</span>
-                        <h2 class="section-title">Experience</h2>
-                        <div class="exp-list">
-                            <div class="exp-item">
-                                <div class="exp-date">2025 — Feb 2026</div>
-                                <div class="exp-title">Core Programmer</div>
-                                <span class="exp-studio">San Franciso Police Department + Grand Army Republic</span>
-                                <p class="exp-desc">Optimized a lot of stuff. Rewrote HitReg, developed gifting systems and much more.</p>
-                            </div>
-                            <div class="exp-item">
-                                <div class="exp-date">2021 — 2023</div>
-                                <div class="exp-title">Lead Programmer & Development Manager</div>
-                                <span class="exp-studio">Blox Channel</span>
-                                <p class="exp-desc">Developed server validation and removed 99% of the backdoors. Exploiters stopped coming.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- <div>
-                        <span class="section-tag">Testimonials</span>
-                        <h2 class="section-title">Studio Feedback</h2>
-                        <div class="u-grid" style="gap: 20px;">
-                            <div class="card" style="padding: 24px;">
-                                <p style="font-style: italic; color: var(--text-2); margin-bottom: 16px;">"Ethan's ability to take a messy, high-latency project and turn it into a high-performance system was critical for our launch."</p>
-                                <div style="font-weight: 700;">— Studio Lead, SFPD</div>
-                            </div>
-                            <div class="card" style="padding: 24px;">
-                                <p style="font-style: italic; color: var(--text-2); margin-bottom: 16px;">"Rare to find a developer who understands both the math behind physics and the intricacies of Roblox networking."</p>
-                                <div style="font-weight: 700;">— Lead Dev, Blox Channel</div>
-                            </div>
-                        </div>
-                    </div> -->
-                </div>
-            </div>
-        </section>
-
-        <section id="skills" style="padding: 100px 0;">
-            <div class="u-container">
-                <div class="section-header" style="text-align: center; margin: 0 auto 60px;">
-                    <span class="section-tag">Expertise</span>
-                    <h2 class="section-title">Technical Proficiency</h2>
-                </div>
-
-                <div class="skills-grid">
-                    <div class="skill-category">
-                        <h4>⚡ Core Programming</h4>
-                        <div class="skill-item">
-                            <div class="skill-info"><span class="skill-name">Data-Oriented Programming</span><span class="skill-val">98%</span></div>
-                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 98%;"></div></div>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-info"><span class="skill-name">Luau / Lua</span><span class="skill-val">95%</span></div>
-                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 95%;"></div></div>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-info"><span class="skill-name">Object-Oriented Programming</span><span class="skill-val">90%</span></div>
-                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 90%;"></div></div>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-info"><span class="skill-name">Functional Programming</span><span class="skill-val">80%</span></div>
-                            <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 80%;"></div></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- <section id="hiring" style="padding: 100px 0; background: rgba(59, 130, 246, 0.03);">
-            <div class="u-container">
-                <div class="section-header" style="text-align: center; margin: 0 auto 60px;">
-                    <span class="section-tag">Hiring Information</span>
-                    <h2 class="section-title">Collaboration Models</h2>
-                </div>
-
-                <div class="collab-grid">
-                    <div class="collab-card">
-                        <span class="collab-icon">🏢</span>
-                        <h3>Full-Time Studio</h3>
-                        <p style="color:var(--text-2); margin-top:10px;">Deep integration into your engineering team for long-term production.</p>
-                        <ul style="list-style:none; margin-top:20px; color:var(--text-3); font-size:0.9rem;">
-                            <li>• Agile Methodology</li>
-                            <li>• Code Reviews & Mentorship</li>
-                            <li>• Scalable Architecture</li>
-                        </ul>
-                    </div>
-
-                    <div class="collab-card" style="border-color: var(--primary);">
-                        <span class="collab-icon">🧩</span>
-                        <h3>System Contract</h3>
-                        <p style="color:var(--text-2); margin-top:10px;">Standalone architecture for specific mechanics or backend foundations.</p>
-                        <ul style="list-style:none; margin-top:20px; color:var(--text-3); font-size:0.9rem;">
-                            <li>• Data Persistence</li>
-                            <li>• Custom Physics Engines</li>
-                            <li>• Security Audits</li>
-                        </ul>
-                    </div>
-
-                    <div class="collab-card">
-                        <span class="collab-icon">📈</span>
-                        <h3>Rev-Share / Partner</h3>
-                        <p style="color:var(--text-2); margin-top:10px;">Strategic partnership for high-potential projects with established funding.</p>
-                        <ul style="list-style:none; margin-top:20px; color:var(--text-3); font-size:0.9rem;">
-                            <li>• Core Gameplay Design</li>
-                            <li>• Monetization Backend</li>
-                            <li>• Long-term Scalability</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section> -->
-
-    </main>
-
-    <footer id="contact">
-        <div class="u-container footer-grid">
-            <div class="f-col">
-                <a href="#" class="brand" style="margin-bottom:20px;">EthanDevz</a>
-                <p style="color:var(--text-3); font-size:0.9rem; max-width:300px;">
-                    Engineering the future of Roblox experiences. Based in the UK, available globally.
-                </p>
-            </div>
-            
-            <div class="f-col">
-                <h4 style="color:#fff; margin-bottom:20px;">Navigation</h4>
-                <a href="#projects" class="f-link inter-hov">Portfolio</a>
-                <a href="#experience" class="f-link inter-hov">Experience</a>
-                <a href="#skills" class="f-link inter-hov">Skills</a>
-            </div>
-            
-            <div class="f-col">
-                <h4 style="color:#fff; margin-bottom:20px;">Platforms</h4>
-                <a href="https://create.roblox.com/talent/creators/281018055" class="f-link inter-hov">Roblox Talent</a>
-                <a href="https://devforum.roblox.com/u/sincxshgrxbs/summary" class="f-link inter-hov">DevForum</a>
-            </div>
-
-            <div class="f-col">
-                <h4 style="color:#fff; margin-bottom:20px;">Hiring</h4>
-                <div class="f-link inter-hov" style="cursor:pointer;" onclick="copyDiscord()">
-                    Discord: <span style="color:#fff; font-weight:600;">ethanmracing</span>
-                </div>
-                <div style="margin-top:20px; padding:12px; background:rgba(255,255,255,0.05); border-radius:8px; display:inline-block; font-family:var(--font-mono); font-size:0.8rem;">
-                    <span style="color:var(--primary)">●</span> UK Time: <span id="clock">00:00</span>
-                </div>
-            </div>
-        </div>
-        <div class="u-container" style="text-align:center; margin-top:60px; padding-top:20px; border-top:1px solid #1e293b; color:var(--text-3); font-size:0.8rem;">
-            &copy; 2026 EthanDevz Engineering. Professional Roblox Systems.
-        </div>
-    </footer>
-
-    <div class="modal-overlay" id="proj-modal">
-        <div class="modal-card">
-            <div class="close-modal inter-hov" onclick="closeProject()">×</div>
-            <div class="modal-hero" id="m-hero"></div>
-            <div class="modal-body">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
-                    <div>
-                        <span id="m-role" class="b-role">ROLE</span>
-                        <h2 id="m-title" style="font-size:2.5rem; font-weight:800; color:#fff;">Title</h2>
-                    </div>
-                    <div id="m-stat-box" style="text-align: right;">
-                        <span style="color:var(--text-3); font-size:0.75rem; text-transform:uppercase;">Success Metric</span>
-                        <div id="m-stat" style="font-size:1.5rem; font-weight:800; color:var(--primary);">Stat</div>
-                    </div>
-                </div>
-                
-                <div style="display:grid; grid-template-columns: 2fr 1fr; gap:60px;">
-                    <div>
-                        <h4 style="color: #fff; margin-bottom: 12px;">Technical Breakdown</h4>
-                        <p id="m-desc" style="color:var(--text-2); line-height:1.7; margin-bottom:30px; font-size:1rem;"></p>
-                        
-                        <h4 style="color: #fff; margin-bottom: 12px;">Challenges Solved</h4>
-                        <p id="m-challenges" style="color:var(--text-2); font-size:0.95rem; margin-bottom:30px;"></p>
-                    </div>
-                    <div>
-                        <h4 style="color:#fff; margin-bottom:12px;">Tech Stack</h4>
-                        <div id="m-stack" class="tag-list" style="margin-bottom: 30px;"></div>
-                        
-                        <h4 style="color:#fff; margin-bottom:12px;">Systems Included</h4>
-                        <ul id="m-systems" style="color:var(--text-2); font-size:0.9rem; line-height:2;"></ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="wrap">
+    <div class="hero">
+      <p class="kicker">Programmer</p>
+      <h1>I build the machines and systems that hold a Roblox game together.</h1>
+      <p class="lede">
+        I'm Ethan, I script gameplay systems for Roblox games, mostly the kind of stuff
+        players never notice unless it breaks. Right now I'm on the team behind
+        <b>Industrialist</b>, a factory and automation sim that's been played over 50 million times.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-fill" href="https://discord.com/users/1275635857990352948" target="_blank">message me on Discord</a>
+        <a class="btn btn-line" href="#work">see the work</a>
+      </div>
     </div>
 
-    <script>
-        const PROJECTS = [
-            {
-                id: 'blox',
-                title: "Blox Channel",
-                role: "Lead Programmer & Development Manager",
-                category: "Backend",
-                desc: "A ground-up architectural rewrite for a 5M+ visit roleplay experience. Developed a custom state machine for server management and migrated legacy systems to updated modular frameworks..",
-                challenges: "Solved severe memory leaks related to nested connections and optimized remote traffic by 40% using custom bit-packing for network packets.",
-                stack: ["Luau", "ProfileService"],
-                systems: ["Modular Inventory", "Data Migration", "Admin Command Engine", "Session Locking"],
-                stat: "35% ↓ Server Load",
-                img: "https://tr.rbxcdn.com/180DAY-36cbaa829113e930b10ebf3729aeb30a/768/432/Image/Webp/noFilter",
-                status: "Live"
-            },
-            {
-                id: 'gsrp',
-                title: "GSRP",
-                role: "Contractor",
-                category: "Security",
-                desc: "Designed and implemented a server-authoritative movement validation suite for a high-player count simulator.",
-                challenges: "Balanced aggressive anti-cheat measures with lag compensation to ensure legitimate players on 200ms+ ping remained unaffected by rubberbanding.",
-                stack: ["Networking", "Raycasting"],
-                systems: ["Noclip Validation", "Flight Detection", "Velocity Capping", "Remote Sanitization"],
-                stat: "100% Exploit Proof",
-                img: "https://tr.rbxcdn.com/180DAY-4059622c0f1b3a038d89a7bea7d02da6/768/432/Image/Webp/noFilter",
-                status: "Live"
-            },
-            {
-                id: 'sfpd',
-                title: "SFPD",
-                role: "Core Programmer",
-                category: "Backend",
-                desc: "Enterprise-grade economy and transaction logging system using Transactional DataStores.",
-                challenges: "Ensured atomic updates for trade systems to prevent duplication exploits during server crashes or high-stress periods.",
-                stack: ["DataStores"],
-                systems: ["Global Leaderboards", "Secure Trading", "Live Logs", "Economy Balancer"],
-                stat: "0 Dupes Reported",
-                img: "https://tr.rbxcdn.com/180DAY-373665e2a4ee6c9186be86760244a955/768/432/Image/Webp/noFilter",
-                status: "Live"
-            },
-            {
-                id: 'rep',
-                title: "Republic Army",
-                role: "Core Programmer",
-                category: "Optimization",
-                desc: "Performance overhaul focusing on physics replication and occlusion culling for large-scale urban maps.",
-                challenges: "Implemented a custom spatial partitioning system to handle 10,000+ interactive props without taxing the client CPU.",
-                stack: ["Luau", "Culling"],
-                systems: ["Physics Sleeping", "Asset Streaming", "LOD Engine", "Network Culling"],
-                stat: "60 FPS Constant",
-                img: "https://tr.rbxcdn.com/180DAY-263e9eb449da89daba00a01df8097046/768/432/Image/Webp/noFilter",
-                status: "Live"
-            }
-        ];
+    <div class="strip">
+      <div class="strip-track">
+        <div class="strip-point">
+          <div class="dot"></div>
+          <div class="when">December 25 - Feb 26</div>
+          <div class="what">Core programmer at Lapis</div>
+        </div>
+        <div class="strip-point">
+          <div class="dot"></div>
+          <div class="when">22 Mar 2026</div>
+          <div class="what">Joined Industrialist as a programmer</div>
+        </div>
+        <div class="strip-point">
+          <div class="dot"></div>
+          <div class="when">today</div>
+          <div class="what">Still shipping, 9,000 peak CCU</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        class TerminalEngine {
-            constructor(containerId) {
-                this.container = document.getElementById(containerId);
-                this.bootSequence();
-            }
+  <section id="work">
+    <div class="wrap">
+      <p class="section-label">selected work</p>
+      <h2>What I've actually shipped</h2>
 
-            async addLine(text, type = 'log', delay = 0) {
-                if (delay) await new Promise(r => setTimeout(r, delay));
-                const line = document.createElement('div');
-                line.className = `line ${type}`;
-                line.textContent = text;
-                this.container.appendChild(line);
-                this.container.scrollTop = this.container.scrollHeight;
-                return line;
-            }
+      <div class="project">
+        <div class="project-head">
+          <h3 class="project-name">Industrialist</h3>
+          <span class="project-stat">9,000 peak CCU</span>
+        </div>
+        <p class="project-meta">Programmer · joined March 22, 2026 · still on the team</p>
+        <div class="project-body">
+          <div>
+            <p class="project-desc">
+              A factory building and automation game, the kind of thing you'd get if Factorio
+              and Mindustry had a baby on Roblox. Players chain together extractors, conveyors
+              and processors while managing power and pollution. I came on as a programmer and
+              spent most of my time reworking existing machine systems, building new machines
+              from the ground up, and going through the codebase fixing bugs that had been
+              sitting there for a while. A good chunk of my time also went into optimizing core
+              scripts that were eating performance.
+            </p>
+            <div class="project-tags">
+              <span class="tag">Luau</span>
+              <span class="tag">machine logic</span>
+              <span class="tag">optimization</span>
+              <span class="tag">bug fixing</span>
+            </div>
+            <a class="project-link" href="https://www.roblox.com/games/9192423027/Industrialist" target="_blank">play it on Roblox →</a>
+          </div>
+        </div>
+      </div>
 
-            async bootSequence() {
-                await this.addLine("Roblox Engine Runtime v4.2.0-production", "log", 500);
-                await this.addLine("Initializing shared kernel...", "log", 200);
-                await this.addLine("Loading ProfileService partitions...", "log", 300);
-                await this.addLine("[DataStore] Session Locking enabled for 127.0.0.1", "warn", 200);
-                await this.addLine("whoami", "cmd", 800);
-                await this.addLine("Developer: EthanDevz", "log", 100);
-                await this.addLine("Status: Roblox Senior Programmer", "log", 100);
-                await this.addLine("ls -l /projects", "cmd", 1000);
-                await this.addLine("Found 4 production-ready systems.", "success", 200);
-                
-            }
+      <div class="project">
+        <div class="project-head">
+          <h3 class="project-name">Lapis</h3>
+        </div>
+        <p class="project-meta">Core programmer · 2 months</p>
+        <div class="project-body">
+          <p class="project-desc">
+            Lapis is a Roblox studio that builds and grows games on the platform. I worked
+            there as a core programmer for two months, helping build out the gameplay systems
+            behind their projects before moving on to Industrialist.
+          </p>
+          <div class="project-tags">
+            <span class="tag">Luau</span>
+            <span class="tag">gameplay systems</span>
+          </div>
+          <a class="project-link" href="https://lapis.gg/" target="_blank">lapis.gg →</a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        }
+  <section id="skills">
+    <div class="wrap">
+      <p class="section-label">toolkit</p>
+      <h2>What I work with</h2>
+      <div class="skills-list">
+        <div class="skills-col">
+          <h3>Language</h3>
+          <ul>
+            <li>Luau</li>
+            <li>Module-based architecture</li>
+            <li>Data-driven configs</li>
+          </ul>
+        </div>
+        <div class="skills-col">
+          <h3>Systems</h3>
+          <ul>
+            <li>Machine / production logic</li>
+            <li>State machines</li>
+            <li>Economy & progression</li>
+          </ul>
+        </div>
+        <div class="skills-col">
+          <h3>The unglamorous part</h3>
+          <ul>
+            <li>Bug fixing at scale</li>
+            <li>Performance optimization</li>
+            <li>Keeping a live game stable</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        function renderProjects(filter = 'all', search = '') {
-            const grid = document.getElementById('project-list');
-            grid.innerHTML = '';
+  <section id="contact">
+    <div class="wrap">
+      <div class="contact">
+        <div>
+          <p class="section-label">get in touch</p>
+          <h2>Got something to build?</h2>
+          <p>Discord is the easiest way to reach me, I check it more than anything else.</p>
+        </div>
+        <div class="discord-tag">ethanmracing</div>
+      </div>
+    </div>
+  </section>
 
-            const filtered = PROJECTS.filter(p => {
-                const matchesFilter = filter === 'all' || p.category === filter;
-                const matchesSearch = p.title.toLowerCase().includes(search.toLowerCase()) || 
-                                     p.stack.some(s => s.toLowerCase().includes(search.toLowerCase()));
-                return matchesFilter && matchesSearch;
-            });
-
-            filtered.forEach(p => {
-                const item = document.createElement('div');
-                item.className = `bento-item inter-hov ${p.id === 'blox' || p.id === 'rep' ? 'span-2' : ''}`;
-                item.onclick = () => openProject(p.id);
-                
-                item.innerHTML = `
-                    <div class="bento-img-container">
-                        <img src="${p.img}" class="bento-img">
-                    </div>
-                    <div class="bento-content">
-                        <span class="b-role">${p.role}</span>
-                        <h3 class="b-title">${p.title}</h3>
-                        <p class="b-desc-short">${p.desc}</p>
-                        <div class="tag-list">
-                            ${p.stack.map(s => `<span class="mini-tag">${s}</span>`).join('')}
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(item);
-            });
-        }
-
-        function openProject(id) {
-            const p = PROJECTS.find(proj => proj.id === id);
-            const m = document.getElementById('proj-modal');
-            
-            document.getElementById('m-title').innerText = p.title;
-            document.getElementById('m-role').innerText = p.role;
-            document.getElementById('m-desc').innerText = p.desc;
-            document.getElementById('m-challenges').innerText = p.challenges;
-            document.getElementById('m-stat').innerText = p.stat;
-            document.getElementById('m-hero').style.background = `url(${p.img}) center/cover`;
-            
-            const stack = document.getElementById('m-stack');
-            stack.innerHTML = p.stack.map(s => `<span class="mini-tag" style="padding: 6px 12px; font-size: 0.8rem;">${s}</span>`).join('');
-            
-            const systems = document.getElementById('m-systems');
-            systems.innerHTML = p.systems.map(s => `<li>✓ ${s}</li>`).join('');
-
-            m.classList.add('active');
-        }
-
-        function closeProject() {
-            document.getElementById('proj-modal').classList.remove('active');
-        }
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const el = entry.target;
-                    const target = parseInt(el.getAttribute('data-target'));
-                    let current = 0;
-                    const increment = target / 50;
-                    const timer = setInterval(() => {
-                        current += increment;
-                        if (current >= target) {
-                            el.innerText = target + (el.innerText.includes('%') ? '%' : '+');
-                            clearInterval(timer);
-                        } else {
-                            el.innerText = Math.floor(current);
-                        }
-                    }, 30);
-                    observer.unobserve(el);
-                }
-            });
-        }, { threshold: 0.5 });
-
-        window.addEventListener('DOMContentLoaded', () => {
-            new TerminalEngine('term-out');
-            renderProjects();
-            
-            document.querySelectorAll('.h-stat-item span').forEach(s => observer.observe(s));
-
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    renderProjects(btn.dataset.filter, document.getElementById('proj-search').value);
-                });
-            });
-
-            document.getElementById('proj-search').addEventListener('input', (e) => {
-                const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
-                renderProjects(activeFilter, e.target.value);
-            });
-
-            const dot = document.getElementById('cursor-dot');
-            const ring = document.getElementById('cursor-ring');
-            window.addEventListener('mousemove', (e) => {
-                dot.style.left = e.clientX + 'px';
-                dot.style.top = e.clientY + 'px';
-                setTimeout(() => {
-                    ring.style.left = e.clientX + 'px';
-                    ring.style.top = e.clientY + 'px';
-                }, 50);
-            });
-
-            document.querySelectorAll('.inter-hov').forEach(el => {
-                el.addEventListener('mouseenter', () => document.body.classList.add('is-hovering'));
-                el.addEventListener('mouseleave', () => document.body.classList.remove('is-hovering'));
-            });
-
-            window.addEventListener('scroll', () => {
-                const nav = document.querySelector('.navbar');
-                if (window.scrollY > 50) nav.classList.add('scrolled');
-                else nav.classList.remove('scrolled');
-            });
-
-            const updateClock = () => {
-                document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-            };
-            setInterval(updateClock, 1000); updateClock();
-        });
-
-        function copyDiscord() {
-            navigator.clipboard.writeText("ethanmracing");
-            alert("Discord ID copied to clipboard!");
-        }
-
-        const canvas = document.getElementById('canvas-bg');
-        const ctx = canvas.getContext('2d');
-        let width, height, particles = [];
-
-        function initCanvas() {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
-            particles = Array.from({length: Math.floor(width/20)}, () => ({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 0.4,
-                vy: (Math.random() - 0.5) * 0.4,
-                s: Math.random() * 2
-            }));
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, width, height);
-            ctx.fillStyle = "rgba(59, 130, 246, 0.3)";
-            particles.forEach(p => {
-                p.x += p.vx; p.y += p.vy;
-                if(p.x < 0 || p.x > width) p.vx *= -1;
-                if(p.y < 0 || p.y > height) p.vy *= -1;
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill();
-            });
-            requestAnimationFrame(animate);
-        }
-
-        window.addEventListener('resize', initCanvas);
-        initCanvas(); animate();
-
-    </script>
+  <div class="wrap">
+    <footer>
+      <span>Ethan, Roblox programmer</span>
+      <span>last updated June 2026</span>
+    </footer>
+  </div>
 </body>
 </html>
