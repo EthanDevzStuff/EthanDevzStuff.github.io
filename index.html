@@ -1,80 +1,371 @@
 <!DOCTYPE html>
-<meta property="og:title" content="Big Scary Yellow Book">
-<meta property="og:description" content="Recipes yes yes yes! Made by ethanmracing">
-<meta property="og:image" content="https://ethandevzstuff.github.io/1364569769100968068.png">
-<meta property="og:url" content="https://ethandevzstuff.github.io">
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Loading Recipe...</title>
-  <style>
-    body {
-      margin:0;
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-      background:linear-gradient(180deg,#071029 0%, #061224 100%);
-      color:#e6eef6;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
-      overflow:hidden;
-    }
-    .loader-container {
-      text-align:center;
-      position:absolute;
-      width:100%;
-      height:100%;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      background:linear-gradient(180deg,#071029 0%, #061224 100%);
-      z-index:10;
-    }
-    .loader {
-      width:40px;
-      height:40px;
-      border:4px solid rgba(255,255,255,0.1);
-      border-top:4px solid #06b6d4;
-      border-radius:50%;
-      animation: spin 1s linear infinite;
-      margin-bottom:18px;
-    }
-    @keyframes spin { 0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);} }
-    #recipeFrame {
-      width: 100%;
-      height: 100%;
-      border: none;
-      opacity:0;
-      transform: scale(0.95);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    #recipeFrame.show {
-      opacity:1;
-      transform: scale(1);
-    }
-  </style>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:type" content="website">
+<meta property="og:title" content="EthanDevz // Roblox Programmer">
+<meta property="og:description" content="Specializing in large-scale Roblox systems, high-performance backends, and optimizations. View my  portfolio.">
+<meta property="og:url" content="https://ethandevzstuff.github.io/portfolio/"> <meta name="theme-color" content="#4775ff"> <meta name="twitter:card" content="summary_large_image">
+<title>Ethan - Roblox programmer</title>
+    
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --paper: #15161a;
+    --paper-raised: #1c1e23;
+    --ink: #ece9e2;
+    --ink-soft: #9b9a9c;
+    --ink-faint: #65656a;
+    --line: #303236;
+    --rust: #8fb4ac;
+    --olive: #b08a5a;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,h2,h3,.disp{ font-family:'Archivo', sans-serif; }
+
+  .wrap{ max-width: 740px; margin:0 auto; padding: 0 26px; }
+
+  a{ color: var(--rust); text-decoration: none; }
+  a:hover{ text-decoration: underline; }
+
+  header{ padding: 38px 0 0; }
+  .header-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding-bottom: 22px; border-bottom: 1px solid var(--line);
+    font-size: 14px; color: var(--ink-soft);
+  }
+  .header-row .name{ font-weight:600; color: var(--ink); }
+  .header-row nav{ display:flex; gap:22px; }
+  .header-row nav a{ color: var(--ink-soft); }
+  .header-row nav a:hover{ color: var(--rust); }
+
+  .hero{ padding: 54px 0 20px; }
+  .kicker{
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--rust);
+    font-weight: 600;
+    margin: 0 0 16px;
+  }
+  h1{
+    font-size: 38px;
+    line-height: 1.22;
+    font-weight: 700;
+    margin: 0 0 20px;
+    max-width: 560px;
+    letter-spacing: -0.3px;
+  }
+  .lede{
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    max-width: 520px;
+    margin: 0 0 30px;
+  }
+  .lede b{ color: var(--ink); font-weight: 600; }
+
+  .hero-actions{ display:flex; gap: 14px; flex-wrap: wrap; align-items:center; }
+  .btn{
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-size: 14.5px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid var(--ink);
+  }
+  .btn-fill{
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .btn-fill:hover{ background:#cfcbc0; text-decoration:none; }
+  .btn-line{
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--line);
+  }
+  .btn-line:hover{ border-color: var(--ink); text-decoration:none; }
+
+  .strip{ margin-top: 10px; padding: 26px 0 40px; }
+  .strip-track{
+    position: relative;
+    display:flex;
+    justify-content: space-between;
+    padding: 0 4px;
+  }
+  .strip-track::before{
+    content:"";
+    position:absolute;
+    top: 6px; left: 4px; right: 4px;
+    height: 1.5px;
+    background: var(--line);
+  }
+  .strip-point{
+    position: relative;
+    z-index: 1;
+    display:flex; flex-direction:column; align-items:flex-start;
+    max-width: 150px;
+  }
+  .strip-point .dot{
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 2px solid var(--rust);
+    margin-bottom: 14px;
+  }
+  .strip-point:nth-child(2) .dot{ border-color: var(--olive); }
+  .strip-point:nth-child(3) .dot{ border-color: var(--ink); background: var(--ink); }
+  .strip-point .when{ font-size: 12px; color: var(--ink-faint); margin-bottom: 4px; font-weight: 500; }
+  .strip-point .what{ font-size: 14px; color: var(--ink); font-weight: 600; line-height: 1.4; }
+
+  section{ padding: 50px 0; border-top: 1px solid var(--line); }
+  .section-label{
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  h2{ font-size: 24px; font-weight: 700; margin: 0 0 30px; letter-spacing: -0.2px; }
+
+  .project{ padding: 28px 0; border-top: 1px solid var(--line); }
+  .project:first-of-type{ border-top: none; padding-top: 0; }
+
+  .project-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    gap: 16px; flex-wrap: wrap; margin-bottom: 6px;
+  }
+  .project-name{ font-family:'Archivo', sans-serif; font-size: 21px; font-weight: 700; margin:0; }
+  .project-meta{ font-size: 13.5px; color: var(--ink-faint); }
+  .project-stat{ font-size: 13.5px; color: var(--rust); font-weight: 600; }
+
+  .project-body{ margin-top: 14px; }
+  .project-desc{ font-size: 15.5px; line-height: 1.75; color: var(--ink-soft); margin: 0 0 14px; }
+  .project-tags{ display:flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
+  .tag{
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 4px 10px;
+  }
+  .project-link{ font-size: 14px; font-weight: 600; }
+
+  .skills-list{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--line);
+  }
+  .skills-col{
+    padding: 20px 18px 4px 18px;
+    border-right: 1px solid var(--line);
+  }
+  .skills-col:last-child{ border-right: none; padding-left:18px; }
+  .skills-col:first-child{ padding-left:0; }
+  .skills-col h3{ font-size: 14px; margin: 0 0 12px; font-weight: 600; color: var(--ink-soft); }
+  .skills-col ul{ list-style:none; margin:0; padding:0; }
+  .skills-col li{ font-size: 14.5px; padding: 6px 0; color: var(--ink); }
+
+  .contact{ display:flex; justify-content:space-between; align-items:flex-end; flex-wrap: wrap; gap: 20px; }
+  .contact h2{ margin-bottom: 10px; }
+  .contact p{ font-size: 15.5px; color: var(--ink-soft); max-width: 380px; margin:0; line-height:1.6; }
+  .discord-tag{
+    font-family:'Archivo', sans-serif;
+    font-size: 17px; font-weight: 600;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    padding: 12px 22px;
+    white-space: nowrap;
+  }
+
+  footer{
+    padding: 28px 0 50px;
+    color: var(--ink-faint);
+    font-size: 13px;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+    border-top: 1px solid var(--line);
+  }
+
+  @media (max-width: 580px){
+    h1{ font-size: 30px; }
+    .header-row nav{ display:none; }
+    .skills-list{ grid-template-columns: 1fr; }
+    .skills-col{ border-right:none; border-bottom: 1px solid var(--line); padding: 18px 0; }
+    .skills-col:last-child{ border-bottom:none; padding-left:0; }
+  }
+</style>
 </head>
 <body>
-  <div class="loader-container" id="loader">
-    <div class="loader"></div>
-    <h1>Adding Gold Wire to a Logic Assembler...</h1>
-    <p>Please wait for the Big Scary Yellow Book</p>
+
+  <header>
+    <div class="wrap header-row">
+      <span class="name">Ethan</span>
+      <nav>
+        <a href="#work">work</a>
+        <a href="#skills">skills</a>
+        <a href="#contact">contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="hero">
+      <p class="kicker">Programmer</p>
+      <h1>I build the machines and systems that hold a Roblox game together.</h1>
+      <p class="lede">
+        I'm Ethan, I script gameplay systems for Roblox games, mostly the kind of stuff
+        players never notice unless it breaks.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-fill" href="https://discord.com/users/1275635857990352948" target="_blank">message me on Discord</a>
+        <a class="btn btn-line" href="#work">see the work</a>
+      </div>
+    </div>
+
+    <div class="strip">
+      <div class="strip-track">
+        <div class="strip-point">
+          <div class="dot"></div>
+          <div class="when">December 25 - Feb 26</div>
+          <div class="what">Core programmer at Lapis</div>
+        </div>
+        <div class="strip-point">
+          <div class="dot"></div>
+          <div class="when">March 26 - June 26</div>
+          <div class="what">Programmer @ Mamytema Studios / Industrialist</div>
+        </div>
+        <div class="strip-point">
+          <div class="dot"></div>
+          <div class="when">today</div>
+          <div class="what">Free for work.</div>
+        </div>
+      </div>
+    </div>
   </div>
-  <iframe id="recipeFrame" src=""></iframe>
-<script>
-  const loader = document.getElementById('loader');
-  const frame = document.getElementById('recipeFrame');
-  setTimeout(() => {
-    frame.src = "recipe.html";
-    loader.style.transition = "opacity 0.4s ease";
-    loader.style.opacity = 0;
-    setTimeout(() => loader.style.display = "none", 400);
-    frame.onload = () => {
-      frame.classList.add('show');
-      document.title = "Big Scary Yellow Book";
-    };
-  }, 1500);
-</script>
+
+  <section id="work">
+    <div class="wrap">
+      <p class="section-label">selected work</p>
+      <h2>What I've actually shipped</h2>
+
+      <div class="project">
+        <div class="project-head">
+          <h3 class="project-name">Industrialist</h3>
+          <span class="project-stat">10,000 peak CCU</span>
+        </div>
+        <p class="project-meta">Programmer · joined March 22, 2026 · retired June 28th, 2026</p>
+        <div class="project-body">
+          <div>
+            <p class="project-desc">
+              A factory building and automation game, the kind of thing you'd get if Factorio
+              and Mindustry had a baby on Roblox. Players chain together extractors, conveyors
+              and processors while managing power and pollution. I came on as a programmer and
+              spent most of my time reworking existing machine systems, building new machines
+              from the ground up, and going through the codebase fixing bugs that had been
+              sitting there for a while. A good chunk of my time also went into optimizing core
+              scripts that were eating performance.
+            </p>
+            <div class="project-tags">
+              <span class="tag">Luau</span>
+              <span class="tag">machine logic</span>
+              <span class="tag">optimization</span>
+              <span class="tag">bug fixing</span>
+            </div>
+            <a class="project-link" href="https://www.roblox.com/games/9192423027/Industrialist" target="_blank">play it on Roblox →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project">
+        <div class="project-head">
+          <h3 class="project-name">Lapis</h3>
+          <span class="project-stat">20k players</span>
+        </div>
+        <p class="project-meta">Core programmer · 2 months</p>
+        <div class="project-body">
+          <p class="project-desc">
+            Lapis is a Roblox studio that builds and grows games on the platform. I worked
+            there as a core programmer for two months, helping build out the gameplay systems
+            behind their projects before moving on to Industrialist.
+          </p>
+          <div class="project-tags">
+            <span class="tag">Luau</span>
+            <span class="tag">gameplay systems</span>
+          </div>
+          <a class="project-link" href="https://lapis.gg/" target="_blank">lapis.gg →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="wrap">
+      <p class="section-label">toolkit</p>
+      <h2>What I work with</h2>
+      <div class="skills-list">
+        <div class="skills-col">
+          <h3>Language</h3>
+          <ul>
+            <li>Luau</li>
+            <li>Module-based architecture</li>
+            <li>Data-driven configs</li>
+          </ul>
+        </div>
+        <div class="skills-col">
+          <h3>Systems</h3>
+          <ul>
+            <li>Machine / production logic</li>
+            <li>State machines</li>
+            <li>Economy & progression</li>
+          </ul>
+        </div>
+        <div class="skills-col">
+          <h3>The unglamorous part</h3>
+          <ul>
+            <li>Bug fixing at scale</li>
+            <li>Performance optimization</li>
+            <li>Keeping a live game stable</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="contact">
+        <div>
+          <p class="section-label">get in touch</p>
+          <h2>Got something to build?</h2>
+          <p>Discord is the easiest way to reach me, I check it more than anything else.</p>
+        </div>
+        <div class="discord-tag">ethanmracing</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <footer>
+      <span>Ethan, Roblox programmer</span>
+      <span>last updated June 2026</span>
+    </footer>
+  </div>
 </body>
 </html>
