@@ -183,6 +183,47 @@
   .skills-col ul{ list-style:none; margin:0; padding:0; }
   .skills-col li{ font-size: 14.5px; padding: 6px 0; color: var(--ink); }
 
+  .endorsements{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+  .endorsement-card{
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 22px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+  .endorsement-quote{
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 0 0 18px;
+  }
+  .endorsement-quote::before{ content:"“"; color: var(--rust); }
+  .endorsement-quote::after{ content:"”"; color: var(--rust); }
+  .endorsement-who{
+    display:flex; align-items:center; gap: 12px;
+  }
+  .endorsement-avatar{
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-size: 13px; font-weight: 700;
+    color: var(--ink-soft);
+    flex-shrink: 0;
+  }
+  .endorsement-name{ font-size: 14px; font-weight: 600; color: var(--ink); }
+  .endorsement-role{ font-size: 12.5px; color: var(--ink-faint); }
+
+  @media (max-width: 580px){
+    .endorsements{ grid-template-columns: 1fr; }
+  }
+
   .contact{ display:flex; justify-content:space-between; align-items:flex-end; flex-wrap: wrap; gap: 20px; }
   .contact h2{ margin-bottom: 10px; }
   .contact p{ font-size: 15.5px; color: var(--ink-soft); max-width: 380px; margin:0; line-height:1.6; }
@@ -220,6 +261,7 @@
       <nav>
         <a href="#work">work</a>
         <a href="#skills">skills</a>
+        <a href="#endorsements">endorsements</a>
         <a href="#contact">contact</a>
       </nav>
     </div>
@@ -343,6 +385,35 @@
             <li>Performance optimization</li>
             <li>Keeping a live game stable</li>
           </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="endorsements">
+    <div class="wrap">
+      <p class="section-label">what people say</p>
+      <h2>Endorsements</h2>
+      <div class="endorsements">
+        <div class="endorsement-card">
+          <p class="endorsement-quote">Ethan always worked hard during his time working for Industrialist. His work ethic was just very high and his motivation to succeed was nice to see.</p>
+          <div class="endorsement-who">
+            <img src="https://cdn.discordapp.com/avatars/362566328394973185/030281ca6cd4491a5d20ea1129888c96.png" alt="pfp" class="endorsement-avatar">
+            <div>
+              <div class="endorsement-name">mamytema</div>
+              <div class="endorsement-role">Owner @ Mamytema Studios</div>
+            </div>
+          </div>
+        </div>
+        <div class="endorsement-card">
+          <p class="endorsement-quote">Ethan really saved us on the game. The game was suffering from very bad performance issues, yet he somehow brang it up from the coffin and our players love it!</p>
+          <div class="endorsement-who">
+            <img src="https://cdn.discordapp.com/avatars/821379461408751636/2db2d3874ab07589674dc7e38a6e669a.png?size=1024" alt="pfp" class="endorsement-avatar">
+            <div>
+              <div class="endorsement-name">scope</div>
+              <div class="endorsement-role">Owner @ GSRP</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
