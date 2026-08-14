@@ -103,41 +103,44 @@
   .live-stats{ margin-top: 34px; }
   .live-stats-grid{
     display:flex;
-    gap: 12px;
+    gap: 44px;
     flex-wrap: wrap;
   }
-  .live-stat-card{
-    flex: 1 1 200px;
-    background: var(--paper-raised);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 16px 18px;
-  }
-  .live-stat-card .lsc-name{
-    font-size: 14px;
-    font-weight: 600;
+  .live-stat-item{ display:flex; flex-direction:column; gap: 6px; }
+  .live-stat-item .lsi-value{
+    font-family:'Archivo', sans-serif;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1;
     color: var(--ink);
-    margin: 0 0 12px;
-    display:flex; align-items:center; gap:8px;
+    letter-spacing: -0.5px;
+    display:flex; align-items:center; gap:9px;
+    font-variant-numeric: tabular-nums;
   }
-  .live-stat-card .lsc-name .live-dot{
-    width:7px; height:7px; border-radius:50%;
+  .live-stat-item .lsi-value.is-updating{
+    animation: lsiflash 0.6s ease;
+  }
+  @keyframes lsiflash{
+    0%{ color: var(--ink); }
+    30%{ color: var(--rust); text-shadow: 0 0 14px rgba(143,180,172,0.5); }
+    100%{ color: var(--ink); }
+  }
+  .live-stat-item .lsi-value .live-dot{
+    width:8px; height:8px; border-radius:50%;
     background: var(--rust);
     box-shadow: 0 0 0 0 rgba(143,180,172,0.6);
     animation: livepulse 2s infinite;
+    flex-shrink:0;
   }
   @keyframes livepulse{
     0%{ box-shadow: 0 0 0 0 rgba(143,180,172,0.5); }
     70%{ box-shadow: 0 0 0 6px rgba(143,180,172,0); }
     100%{ box-shadow: 0 0 0 0 rgba(143,180,172,0); }
   }
-  .live-stat-card .lsc-row{
-    display:flex; justify-content:space-between; align-items:baseline;
-    padding: 5px 0;
+  .live-stat-item .lsi-label{
     font-size: 13.5px;
+    color: var(--ink-faint);
   }
-  .live-stat-card .lsc-label{ color: var(--ink-faint); }
-  .live-stat-card .lsc-value{ color: var(--ink); font-weight: 600; font-family:'JetBrains Mono', monospace; }
   .live-stats-error{
     font-size: 13px;
     color: var(--ink-faint);
@@ -426,9 +429,10 @@
     ];
 
     const corsProxies = [
+      url => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(url),
       url => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
-      url => 'https://corsproxy.io/?url=' + encodeURIComponent(url),
-      url => 'https://thingproxy.freeboard.io/fetch/' + url
+      url => 'https://proxy.corsfix.com/?' + url,
+      url => 'https://cors.x2u.in/' + url
     ];
 
     function formatNumber(n){
@@ -438,11 +442,13 @@
     async function fetchJson(url){
       let lastErr;
       for (const buildProxyUrl of corsProxies){
+        const proxyUrl = buildProxyUrl(url);
         try{
-          const res = await fetch(buildProxyUrl(url));
+          const res = await fetch(proxyUrl);
           if (!res.ok) throw new Error('Request failed: ' + res.status);
           return await res.json();
         }catch(err){
+          console.warn('CORS proxy failed:', proxyUrl, err.message);
           lastErr = err;
           // try next proxy
         }
@@ -462,21 +468,54 @@
       return data.data;
     }
 
-    function renderCard(game){
-      const card = document.createElement('div');
-      card.className = 'live-stat-card';
-      card.innerHTML = `
-        <p class="lsc-name"><span class="live-dot"></span>${game.name}</p>
-        <div class="lsc-row">
-          <span class="lsc-label">playing now</span>
-          <span class="lsc-value">${formatNumber(game.playing ?? 0)}</span>
+    let currentVisits = 0;
+    let currentPlaying = 0;
+    let statsInitialized = false;
+
+    function renderStatsSkeleton(){
+      const grid = document.getElementById('live-stats-grid');
+      grid.innerHTML = `
+        <div class="live-stat-item">
+          <div class="lsi-value" id="lsi-visits">0</div>
+          <div class="lsi-label">total plays</div>
         </div>
-        <div class="lsc-row">
-          <span class="lsc-label">total visits</span>
-          <span class="lsc-value">${formatNumber(game.visits ?? 0)}</span>
+        <div class="live-stat-item">
+          <div class="lsi-value" id="lsi-playing"><span class="live-dot"></span><span id="lsi-playing-num">0</span></div>
+          <div class="lsi-label">live right now</div>
         </div>
       `;
-      return card;
+    }
+
+    function easeOutCubic(t){ return 1 - Math.pow(1 - t, 3); }
+
+    function animateCount(el, from, to, duration = 900){
+      if (from === to) return;
+      const start = performance.now();
+      el.classList.remove('is-updating');
+      // force reflow so the flash animation can retrigger
+      void el.offsetWidth;
+      el.classList.add('is-updating');
+
+      function tick(now){
+        const t = Math.min((now - start) / duration, 1);
+        const eased = easeOutCubic(t);
+        const value = Math.round(from + (to - from) * eased);
+        el.textContent = formatNumber(value);
+        if (t < 1) requestAnimationFrame(tick);
+        else el.textContent = formatNumber(to);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    function updateStatsDisplay(totalVisits, totalPlaying){
+      const visitsEl = document.getElementById('lsi-visits');
+      const playingEl = document.getElementById('lsi-playing-num');
+
+      animateCount(visitsEl, currentVisits, totalVisits);
+      animateCount(playingEl, currentPlaying, totalPlaying);
+
+      currentVisits = totalVisits;
+      currentPlaying = totalPlaying;
     }
 
     async function loadStatsForPlace(placeId){
@@ -487,27 +526,38 @@
     }
 
     async function loadLiveStats(){
-      const grid = document.getElementById('live-stats-grid');
       const errorEl = document.getElementById('live-stats-error');
 
       const results = await Promise.allSettled(robloxPlaceIds.map(loadStatsForPlace));
 
-      grid.innerHTML = '';
+      let totalVisits = 0;
+      let totalPlaying = 0;
       let anySucceeded = false;
 
       results.forEach((result, i) => {
         if (result.status === 'fulfilled'){
-          grid.appendChild(renderCard(result.value));
+          totalVisits += result.value.visits ?? 0;
+          totalPlaying += result.value.playing ?? 0;
           anySucceeded = true;
         }else{
           console.error('Failed to load stats for place', robloxPlaceIds[i], result.reason);
         }
       });
 
-      errorEl.style.display = anySucceeded ? 'none' : 'block';
+      if (anySucceeded){
+        if (!statsInitialized){
+          renderStatsSkeleton();
+          statsInitialized = true;
+        }
+        updateStatsDisplay(totalVisits, totalPlaying);
+        errorEl.style.display = 'none';
+      }else if (!statsInitialized){
+        errorEl.style.display = 'block';
+      }
     }
 
     loadLiveStats();
+    setInterval(loadLiveStats, 10000);
   </script>
 
 </body>
