@@ -100,6 +100,50 @@
   }
   .btn-line:hover{ border-color: var(--ink); text-decoration:none; }
 
+  .live-stats{ margin-top: 34px; }
+  .live-stats-grid{
+    display:flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .live-stat-card{
+    flex: 1 1 200px;
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .live-stat-card .lsc-name{
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0 0 12px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .live-stat-card .lsc-name .live-dot{
+    width:7px; height:7px; border-radius:50%;
+    background: var(--rust);
+    box-shadow: 0 0 0 0 rgba(143,180,172,0.6);
+    animation: livepulse 2s infinite;
+  }
+  @keyframes livepulse{
+    0%{ box-shadow: 0 0 0 0 rgba(143,180,172,0.5); }
+    70%{ box-shadow: 0 0 0 6px rgba(143,180,172,0); }
+    100%{ box-shadow: 0 0 0 0 rgba(143,180,172,0); }
+  }
+  .live-stat-card .lsc-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding: 5px 0;
+    font-size: 13.5px;
+  }
+  .live-stat-card .lsc-label{ color: var(--ink-faint); }
+  .live-stat-card .lsc-value{ color: var(--ink); font-weight: 600; font-family:'JetBrains Mono', monospace; }
+  .live-stats-error{
+    font-size: 13px;
+    color: var(--ink-faint);
+    padding: 10px 2px 0;
+  }
+
   .strip{ margin-top: 10px; padding: 26px 0 40px; }
   .strip-track{
     position: relative;
@@ -237,6 +281,15 @@
         <a class="btn btn-fill" href="https://discord.com/users/1275635857990352948" target="_blank">message me on Discord</a>
         <a class="btn btn-line" href="#work">see the work</a>
       </div>
+
+      <div class="live-stats" id="live-stats">
+        <div class="live-stats-grid" id="live-stats-grid">
+          <!-- cards get injected here -->
+        </div>
+        <p class="live-stats-error" id="live-stats-error" style="display:none;">
+          Live stats are unavailable right now.
+        </p>
+      </div>
     </div>
 
     <div class="strip">
@@ -367,5 +420,95 @@
       <span>last updated June 2026</span>
     </footer>
   </div>
+  <script>
+    const robloxPlaceIds = [
+      9192423027 // Industrialist
+    ];
+
+    const corsProxies = [
+      url => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
+      url => 'https://corsproxy.io/?url=' + encodeURIComponent(url),
+      url => 'https://thingproxy.freeboard.io/fetch/' + url
+    ];
+
+    function formatNumber(n){
+      return Number(n).toLocaleString('en-US');
+    }
+
+    async function fetchJson(url){
+      let lastErr;
+      for (const buildProxyUrl of corsProxies){
+        try{
+          const res = await fetch(buildProxyUrl(url));
+          if (!res.ok) throw new Error('Request failed: ' + res.status);
+          return await res.json();
+        }catch(err){
+          lastErr = err;
+          // try next proxy
+        }
+      }
+      throw lastErr;
+    }
+
+    async function getUniverseId(placeId){
+      const data = await fetchJson(`https://apis.roblox.com/universes/v1/places/${placeId}/universe`);
+      if (!data || !data.universeId) throw new Error('No universe id');
+      return data.universeId;
+    }
+
+    async function getGameStats(universeIds){
+      const data = await fetchJson(`https://games.roblox.com/v1/games?universeIds=${universeIds.join(',')}`);
+      if (!data || !data.data) throw new Error('No game data');
+      return data.data;
+    }
+
+    function renderCard(game){
+      const card = document.createElement('div');
+      card.className = 'live-stat-card';
+      card.innerHTML = `
+        <p class="lsc-name"><span class="live-dot"></span>${game.name}</p>
+        <div class="lsc-row">
+          <span class="lsc-label">playing now</span>
+          <span class="lsc-value">${formatNumber(game.playing ?? 0)}</span>
+        </div>
+        <div class="lsc-row">
+          <span class="lsc-label">total visits</span>
+          <span class="lsc-value">${formatNumber(game.visits ?? 0)}</span>
+        </div>
+      `;
+      return card;
+    }
+
+    async function loadStatsForPlace(placeId){
+      const universeId = await getUniverseId(placeId);
+      const [game] = await getGameStats([universeId]);
+      if (!game) throw new Error('No game returned for place ' + placeId);
+      return game;
+    }
+
+    async function loadLiveStats(){
+      const grid = document.getElementById('live-stats-grid');
+      const errorEl = document.getElementById('live-stats-error');
+
+      const results = await Promise.allSettled(robloxPlaceIds.map(loadStatsForPlace));
+
+      grid.innerHTML = '';
+      let anySucceeded = false;
+
+      results.forEach((result, i) => {
+        if (result.status === 'fulfilled'){
+          grid.appendChild(renderCard(result.value));
+          anySucceeded = true;
+        }else{
+          console.error('Failed to load stats for place', robloxPlaceIds[i], result.reason);
+        }
+      });
+
+      errorEl.style.display = anySucceeded ? 'none' : 'block';
+    }
+
+    loadLiveStats();
+  </script>
+
 </body>
 </html>
