@@ -1,31 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta property="og:type" content="website">
 <meta property="og:title" content="EthanDevz // Roblox Programmer">
-<meta property="og:description" content="Specializing in large-scale Roblox systems, high-performance backends, and optimizations. View my  portfolio.">
-<meta property="og:url" content="https://ethandevzstuff.github.io/portfolio/"> <meta name="theme-color" content="#4775ff"> <meta name="twitter:card" content="summary_large_image">
-<title>Ethan - Roblox programmer</title>
-    
+<meta property="og:description" content="Specializing in large-scale Roblox systems, high-performance backends, and optimizations. View my portfolio.">
+<meta property="og:url" content="https://ethandevzstuff.github.io/portfolio/">
+<meta name="theme-color" content="#15161a">
+<meta name="twitter:card" content="summary_large_image">
+<title>Ethan, Roblox Programmer</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
+<style>
   :root{
     --paper: #15161a;
     --paper-raised: #1c1e23;
+    --paper-raised-hi: #22242a;
     --ink: #ece9e2;
     --ink-soft: #9b9a9c;
     --ink-faint: #65656a;
     --line: #303236;
+    --line-hi: #3d3f45;
     --rust: #8fb4ac;
+    --rust-dim: #628079;
     --olive: #b08a5a;
+    --ok: #7fbf8f;
   }
 
   *{ box-sizing:border-box; }
+  ::selection{ background: var(--rust-dim); color: var(--paper); }
+
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *{ animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior:auto !important; }
+  }
 
   html,body{
     margin:0; padding:0;
@@ -36,46 +49,127 @@
   }
 
   h1,h2,h3,.disp{ font-family:'Archivo', sans-serif; }
+  .mono{ font-family:'JetBrains Mono', monospace; }
 
-  .wrap{ max-width: 740px; margin:0 auto; padding: 0 26px; }
+  .wrap{ max-width: 760px; margin:0 auto; padding: 0 26px; position:relative; }
 
   a{ color: var(--rust); text-decoration: none; }
   a:hover{ text-decoration: underline; }
+  a:focus-visible, button:focus-visible, .btn:focus-visible{
+    outline: 2px solid var(--rust);
+    outline-offset: 3px;
+    border-radius: 4px;
+    text-decoration: none;
+  }
 
-  header{ padding: 38px 0 0; }
+  body{
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 64px 64px;
+    background-position: center top;
+    background-color: var(--paper);
+    background-attachment: local;
+  }
+  body::before{
+    content:"";
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse 900px 500px at 50% -8%, rgba(21,22,26,0) 0%, var(--paper) 78%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after{
+    content:"";
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    pointer-events: none;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .bracketed{ position: relative; }
+  .bracketed::before, .bracketed::after,
+  .bracketed .bk-tl, .bracketed .bk-tr, .bracketed .bk-bl, .bracketed .bk-br{ }
+  .bk{
+    position:absolute; width:11px; height:11px;
+    border-color: var(--line-hi);
+    border-style: solid;
+    opacity: 0;
+    transition: opacity 0.2s ease, border-color 0.2s ease;
+  }
+  .bracketed:hover .bk{ opacity: 1; border-color: var(--rust); }
+  .bk-tl{ top:-1px; left:-1px; border-width:1.5px 0 0 1.5px; }
+  .bk-tr{ top:-1px; right:-1px; border-width:1.5px 1.5px 0 0; }
+  .bk-bl{ bottom:-1px; left:-1px; border-width:0 0 1.5px 1.5px; }
+  .bk-br{ bottom:-1px; right:-1px; border-width:0 1.5px 1.5px 0; }
+
+  header{ position: sticky; top: 0; z-index: 20; background: rgba(21,22,26,0.86); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
   .header-row{
     display:flex; justify-content:space-between; align-items:center;
-    padding-bottom: 22px; border-bottom: 1px solid var(--line);
+    padding: 16px 0;
     font-size: 14px; color: var(--ink-soft);
   }
-  .header-row .name{ font-weight:600; color: var(--ink); }
+  .header-row .name{ font-weight:600; color: var(--ink); display:flex; align-items:center; gap:9px; }
+  .status-dot{
+    width:7px; height:7px; border-radius:50%;
+    background: var(--ink-faint);
+    box-shadow: 0 0 0 3px rgba(101,101,106,0.18);
+    flex-shrink:0;
+  }
   .header-row nav{ display:flex; gap:22px; }
-  .header-row nav a{ color: var(--ink-soft); }
+  .header-row nav a{ color: var(--ink-soft); font-weight:500; }
   .header-row nav a:hover{ color: var(--rust); }
 
-  .hero{ padding: 54px 0 20px; }
+  .nav-toggle{
+    display:none;
+    background:none; border:1px solid var(--line); border-radius:8px;
+    color: var(--ink); width:36px; height:36px;
+    font-size:16px; cursor:pointer; align-items:center; justify-content:center;
+  }
+
+  @media (max-width: 580px){
+    .header-row nav{
+      position:absolute; top:100%; left:0; right:0;
+      flex-direction:column; gap:0;
+      background: var(--paper-raised);
+      border-bottom: 1px solid var(--line);
+      max-height:0; overflow:hidden;
+      transition: max-height 0.28s ease;
+    }
+    .header-row nav.open{ max-height: 240px; }
+    .header-row nav a{ padding: 14px 26px; border-top:1px solid var(--line); }
+    .nav-toggle{ display:flex; }
+  }
+
+  .hero{ padding: 64px 0 26px; position:relative; }
   .kicker{
-    font-size: 13px;
-    letter-spacing: 0.06em;
+    font-size: 12.5px;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--rust);
     font-weight: 600;
-    margin: 0 0 16px;
+    margin: 0 0 18px;
+    display:flex; align-items:center; gap:10px;
   }
+
   h1{
-    font-size: 38px;
-    line-height: 1.22;
+    font-size: 45px;
+    line-height: 1.16;
     font-weight: 700;
     margin: 0 0 20px;
     max-width: 560px;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.7px;
   }
   .lede{
     font-size: 17px;
     line-height: 1.7;
     color: var(--ink-soft);
-    max-width: 520px;
-    margin: 0 0 30px;
+    max-width: 500px;
+    margin: 0 0 32px;
   }
   .lede b{ color: var(--ink); font-weight: 600; }
 
@@ -87,85 +181,142 @@
     font-weight: 600;
     cursor: pointer;
     border: 1.5px solid var(--ink);
+    display:inline-flex; align-items:center; gap:8px;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
   }
-  .btn-fill{
-    background: var(--ink);
-    color: var(--paper);
-  }
-  .btn-fill:hover{ background:#cfcbc0; text-decoration:none; }
-  .btn-line{
-    background: transparent;
-    color: var(--ink);
-    border-color: var(--line);
-  }
-  .btn-line:hover{ border-color: var(--ink); text-decoration:none; }
+  .btn-fill{ background: var(--ink); color: var(--paper); }
+  .btn-fill:hover{ background:#cfcbc0; text-decoration:none; transform: translateY(-1px); }
+  .btn-line{ background: transparent; color: var(--ink); border-color: var(--line); }
+  .btn-line:hover{ border-color: var(--ink); text-decoration:none; transform: translateY(-1px); }
 
-  .strip{ margin-top: 10px; padding: 26px 0 40px; }
-  .strip-track{
-    position: relative;
-    display:flex;
-    justify-content: space-between;
-    padding: 0 4px;
+  .trace-wrap{ margin-top: 44px; position:relative; }
+  .trace-svg{ width:100%; height:auto; display:block; overflow:visible; }
+  .trace-path{
+    fill:none;
+    stroke: var(--line-hi);
+    stroke-width: 1.5;
   }
-  .strip-track::before{
-    content:"";
-    position:absolute;
-    top: 6px; left: 4px; right: 4px;
-    height: 1.5px;
-    background: var(--line);
+  .trace-flow{
+    fill:none;
+    stroke: var(--rust);
+    stroke-width: 1.5;
+    stroke-dasharray: 6 340;
+    stroke-linecap: round;
+    animation: flow 5.5s linear infinite;
+    opacity: 0.9;
   }
-  .strip-point{
-    position: relative;
-    z-index: 1;
-    display:flex; flex-direction:column; align-items:flex-start;
-    max-width: 150px;
+  @keyframes flow{
+    to{ stroke-dashoffset: -700; }
   }
-  .strip-point .dot{
-    width: 13px; height: 13px;
-    border-radius: 50%;
-    background: var(--paper);
-    border: 2px solid var(--rust);
-    margin-bottom: 14px;
+  .trace-node{ fill: var(--paper); stroke: var(--rust); stroke-width: 2; }
+  .trace-node.filled{ fill: var(--ink); stroke: var(--ink); }
+  .trace-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px;
+    fill: var(--ink-faint);
   }
-  .strip-point:nth-child(2) .dot{ border-color: var(--olive); }
-  .strip-point:nth-child(3) .dot{ border-color: var(--ink); background: var(--ink); }
-  .strip-point .when{ font-size: 12px; color: var(--ink-faint); margin-bottom: 4px; font-weight: 500; }
-  .strip-point .what{ font-size: 14px; color: var(--ink); font-weight: 600; line-height: 1.4; }
-
-  section{ padding: 50px 0; border-top: 1px solid var(--line); }
-  .section-label{
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--ink-faint);
+  .trace-when{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    fill: var(--ink-faint);
+  }
+  .trace-what{
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
     font-weight: 600;
-    margin-bottom: 8px;
+    fill: var(--ink);
   }
-  h2{ font-size: 24px; font-weight: 700; margin: 0 0 30px; letter-spacing: -0.2px; }
 
-  .project{ padding: 28px 0; border-top: 1px solid var(--line); }
-  .project:first-of-type{ border-top: none; padding-top: 0; }
+  .repo-browser{
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .repo-browser-head{
+    display:flex; align-items:center; gap:10px;
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--line);
+    background: var(--paper-raised-hi);
+  }
+  .repo-dot{ width:8px; height:8px; border-radius:50%; background: var(--ok); flex-shrink:0; }
+  .repo-path{ font-size: 12.5px; color: var(--ink-soft); flex:1; }
+  .repo-open-link{ font-size: 12px; color: var(--rust); font-weight:500; }
+  .repo-file-list{ list-style:none; margin:0; padding:0; }
+  .repo-file-list li{ border-top: 1px solid var(--line); }
+  .repo-file-list li:first-child{ border-top:none; }
+  .repo-file-list a{
+    display:flex; align-items:center; gap:12px;
+    padding: 12px 16px;
+    color: var(--ink);
+    transition: background 0.15s ease, padding-left 0.15s ease;
+  }
+  .repo-file-list a:hover{ background: rgba(255,255,255,0.025); text-decoration:none; padding-left: 20px; }
+  .repo-file-icon{ color: var(--ink-faint); width: 12px; text-align:center; font-size: 13px; flex-shrink:0; }
+  .repo-file-name{ font-size: 13.5px; flex:1; }
+  .repo-file-tag{
+    font-size: 10.5px; color: var(--ink-faint);
+    border: 1px solid var(--line); border-radius: 5px;
+    padding: 2px 7px; text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  .repo-license{
+    display:flex; align-items:flex-start; gap:11px;
+    padding: 14px 16px;
+    border-top: 1px solid var(--line);
+    background: var(--paper-raised-hi);
+  }
+  .repo-license-icon{ color: var(--olive); font-size: 14px; line-height:1.6; flex-shrink:0; }
+  .repo-license-text{ font-size: 12.5px; line-height: 1.6; color: var(--ink-faint); margin:0; }
+
+  section{ padding: 56px 0; border-top: 1px solid var(--line); position:relative; z-index:1; }
+  .section-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    color: var(--ink-faint);
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  h2{ font-size: 25px; font-weight: 700; margin: 0 0 32px; letter-spacing: -0.3px; }
+
+  .reveal{ opacity: 0; transform: translateY(14px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.in{ opacity: 1; transform: translateY(0); }
+
+  .project{ padding: 30px 22px; border-top: 1px solid var(--line); margin: 0 -22px; border-radius: 10px; transition: background 0.2s ease; }
+  .project:hover{ background: rgba(255,255,255,0.012); }
+  .project:first-of-type{ border-top: none; }
 
   .project-head{
     display:flex; justify-content:space-between; align-items:baseline;
     gap: 16px; flex-wrap: wrap; margin-bottom: 6px;
   }
   .project-name{ font-family:'Archivo', sans-serif; font-size: 21px; font-weight: 700; margin:0; }
-  .project-meta{ font-size: 13.5px; color: var(--ink-faint); }
-  .project-stat{ font-size: 13.5px; color: var(--rust); font-weight: 600; }
+  .project-meta{ font-family:'JetBrains Mono', monospace; font-size: 12.5px; color: var(--ink-faint); }
+  .project-stat{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 12.5px; color: var(--rust); font-weight: 600;
+    background: rgba(143,180,172,0.08);
+    border: 1px solid rgba(143,180,172,0.25);
+    border-radius: 999px;
+    padding: 3px 10px;
+    white-space: nowrap;
+  }
 
   .project-body{ margin-top: 14px; }
-  .project-desc{ font-size: 15.5px; line-height: 1.75; color: var(--ink-soft); margin: 0 0 14px; }
-  .project-tags{ display:flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
+  .project-desc{ font-size: 15.5px; line-height: 1.75; color: var(--ink-soft); margin: 0 0 16px; }
+  .project-tags{ display:flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
   .tag{
-    font-size: 12.5px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 12px;
     color: var(--ink-soft);
     background: var(--paper-raised);
     border: 1px solid var(--line);
-    border-radius: 7px;
+    border-radius: 6px;
     padding: 4px 10px;
   }
-  .project-link{ font-size: 14px; font-weight: 600; }
+  .project-link{ font-size: 14px; font-weight: 600; display:inline-flex; align-items:center; gap:6px; }
+  .project-link .arrow{ transition: transform 0.15s ease; display:inline-block; }
+  .project-link:hover .arrow{ transform: translateX(3px); }
 
   .skills-list{
     display:grid;
@@ -174,82 +325,82 @@
     border-top: 1px solid var(--line);
   }
   .skills-col{
-    padding: 20px 18px 4px 18px;
+    padding: 22px 18px 4px 18px;
     border-right: 1px solid var(--line);
   }
   .skills-col:last-child{ border-right: none; padding-left:18px; }
   .skills-col:first-child{ padding-left:0; }
-  .skills-col h3{ font-size: 14px; margin: 0 0 12px; font-weight: 600; color: var(--ink-soft); }
-  .skills-col ul{ list-style:none; margin:0; padding:0; }
-  .skills-col li{ font-size: 14.5px; padding: 6px 0; color: var(--ink); }
-
-  .endorsements{
-    display:grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
+  .skills-col h3{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 12.5px; margin: 0 0 14px; font-weight: 500; color: var(--ink-faint);
+    text-transform: uppercase; letter-spacing: 0.04em;
   }
+  .skills-col ul{ list-style:none; margin:0; padding:0; }
+  .skills-col li{
+    font-size: 14.5px; padding: 8px 0; color: var(--ink);
+    display:flex; align-items:center; gap:9px;
+  }
+  .skills-col li::before{ content:""; width:5px; height:5px; border-radius:50%; background: var(--rust-dim); flex-shrink:0; }
+
+  @media (max-width: 580px){
+    .skills-list{ grid-template-columns: 1fr; }
+    .skills-col{ border-right:none; border-bottom: 1px solid var(--line); padding: 20px 0; }
+    .skills-col:last-child{ border-bottom:none; padding-left:0; }
+  }
+
+  .endorsements{ display:grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
   .endorsement-card{
     background: var(--paper-raised);
     border: 1px solid var(--line);
     border-radius: 12px;
-    padding: 22px;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
+    padding: 24px;
+    display:flex; flex-direction:column; justify-content:space-between;
+    transition: border-color 0.2s ease, transform 0.2s ease;
   }
-  .endorsement-quote{
-    font-size: 15px;
-    line-height: 1.65;
-    color: var(--ink);
-    margin: 0 0 18px;
-  }
+  .endorsement-card:hover{ border-color: var(--line-hi); transform: translateY(-2px); }
+  .endorsement-quote{ font-size: 15px; line-height: 1.65; color: var(--ink); margin: 0 0 20px; }
   .endorsement-quote::before{ content:"“"; color: var(--rust); }
   .endorsement-quote::after{ content:"”"; color: var(--rust); }
-  .endorsement-who{
-    display:flex; align-items:center; gap: 12px;
-  }
+  .endorsement-who{ display:flex; align-items:center; gap: 12px; }
   .endorsement-avatar{
-    width: 34px; height: 34px;
-    border-radius: 50%;
-    background: var(--line);
-    display:flex; align-items:center; justify-content:center;
-    font-size: 13px; font-weight: 700;
-    color: var(--ink-soft);
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--line); object-fit: cover;
     flex-shrink: 0;
+    border: 1px solid var(--line-hi);
   }
   .endorsement-name{ font-size: 14px; font-weight: 600; color: var(--ink); }
-  .endorsement-role{ font-size: 12.5px; color: var(--ink-faint); }
+  .endorsement-role{ font-family:'JetBrains Mono', monospace; font-size: 11.5px; color: var(--ink-faint); }
 
-  @media (max-width: 580px){
-    .endorsements{ grid-template-columns: 1fr; }
-  }
+  @media (max-width: 580px){ .endorsements{ grid-template-columns: 1fr; } }
 
-  .contact{ display:flex; justify-content:space-between; align-items:flex-end; flex-wrap: wrap; gap: 20px; }
-  .contact h2{ margin-bottom: 10px; }
-  .contact p{ font-size: 15.5px; color: var(--ink-soft); max-width: 380px; margin:0; line-height:1.6; }
+  .contact{ display:flex; justify-content:space-between; align-items:flex-end; flex-wrap: wrap; gap: 24px; }
+  .contact-text h2{ margin-bottom: 10px; }
+  .contact-text p{ font-size: 15.5px; color: var(--ink-soft); max-width: 380px; margin:0; line-height:1.6; }
   .discord-tag{
-    font-family:'Archivo', sans-serif;
-    font-size: 17px; font-weight: 600;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 16px; font-weight: 500;
     border: 1.5px solid var(--ink);
     border-radius: 999px;
     padding: 12px 22px;
     white-space: nowrap;
+    display:inline-flex; align-items:center; gap:10px;
+    transition: transform 0.15s ease, background 0.15s ease;
+    color: var(--ink);
   }
+  .discord-tag:hover{ background: var(--ink); color: var(--paper); text-decoration:none; transform: translateY(-1px); }
 
   footer{
-    padding: 28px 0 50px;
+    padding: 30px 0 54px;
     color: var(--ink-faint);
-    font-size: 13px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 12.5px;
     display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
     border-top: 1px solid var(--line);
+    position: relative; z-index: 1;
   }
 
   @media (max-width: 580px){
-    h1{ font-size: 30px; }
-    .header-row nav{ display:none; }
-    .skills-list{ grid-template-columns: 1fr; }
-    .skills-col{ border-right:none; border-bottom: 1px solid var(--line); padding: 18px 0; }
-    .skills-col:last-child{ border-bottom:none; padding-left:0; }
+    h1{ font-size: 31px; }
   }
 </style>
 </head>
@@ -257,9 +408,11 @@
 
   <header>
     <div class="wrap header-row">
-      <span class="name">Ethan</span>
-      <nav>
+      <span class="name"><span class="status-dot" id="statusDot"></span>Ethan</span>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+      <nav id="navMenu">
         <a href="#work">work</a>
+        <a href="#library">library</a>
         <a href="#skills">skills</a>
         <a href="#endorsements">endorsements</a>
         <a href="#contact">contact</a>
@@ -269,73 +422,73 @@
 
   <div class="wrap">
     <div class="hero">
-      <p class="kicker">Programmer</p>
+      <p class="kicker">- Programmer</p>
       <h1>I build the machines and systems that hold a Roblox game together.</h1>
       <p class="lede">
-        I'm Ethan, I script gameplay systems for Roblox games, mostly the kind of stuff
+        I'm Ethan. I script gameplay systems for Roblox games, mostly the kind of stuff
         players never notice unless it breaks.
       </p>
       <div class="hero-actions">
-        <a class="btn btn-fill" href="https://discord.com/users/1275635857990352948" target="_blank">message me on Discord</a>
+        <a class="btn btn-fill" href="https://discord.com/users/1275635857990352948" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.369a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.058a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.073.073 0 0 1 .078.01c.12.099.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.077.077 0 0 0 .084.029 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.674-3.549-13.66a.06.06 0 0 0-.031-.028M8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.418 2.157-2.418 1.21 0 2.176 1.094 2.157 2.418 0 1.334-.955 2.419-2.157 2.419m7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.418 2.157-2.418 1.21 0 2.176 1.094 2.157 2.418 0 1.334-.947 2.419-2.157 2.419"/></svg>
+          message me on Discord
+        </a>
         <a class="btn btn-line" href="#work">see the work</a>
       </div>
-    </div>
 
-    <div class="strip">
-      <div class="strip-track">
-        <div class="strip-point">
-          <div class="dot"></div>
-          <div class="when">December 25 - Feb 26</div>
-          <div class="what">Core programmer at Lapis</div>
-        </div>
-        <div class="strip-point">
-          <div class="dot"></div>
-          <div class="when">March 26 - June 26</div>
-          <div class="what">Programmer @ Mamytema Studios / Industrialist</div>
-        </div>
-        <div class="strip-point">
-          <div class="dot"></div>
-          <div class="when">today</div>
-          <div class="what">Unavailable.</div>
-        </div>
+      <div class="trace-wrap">
+        <svg class="trace-svg" viewBox="0 0 680 90" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Career timeline: Lapis, then Industrialist, then currently unavailable">
+          <path class="trace-path" d="M20,20 L660,20" />
+          <path class="trace-flow" d="M20,20 L660,20" />
+
+          <circle class="trace-node" cx="20" cy="20" r="5"></circle>
+          <text class="trace-when" x="20" y="46">DEC 25 – FEB 26</text>
+          <text class="trace-what" x="20" y="64">Core programmer, Lapis</text>
+
+          <circle class="trace-node" cx="340" cy="20" r="5"></circle>
+          <text class="trace-when" x="340" y="46">MAR 26 – JUN 26</text>
+          <text class="trace-what" x="340" y="64">Programmer, Industrialist</text>
+
+          <circle class="trace-node filled" cx="660" cy="20" r="5" text-anchor="end"></circle>
+          <text class="trace-when" x="660" y="46" text-anchor="end">TODAY</text>
+          <text class="trace-what" x="660" y="64" text-anchor="end">Not taking new work</text>
+        </svg>
       </div>
     </div>
   </div>
 
   <section id="work">
-    <div class="wrap">
-      <p class="section-label">selected work</p>
+    <div class="wrap reveal">
+      <p class="section-label">// selected work</p>
       <h2>What I've actually shipped</h2>
 
-      <div class="project">
+      <div class="project bracketed"><span class="bk bk-tl"></span><span class="bk bk-tr"></span><span class="bk bk-bl"></span><span class="bk bk-br"></span>
         <div class="project-head">
           <h3 class="project-name">Industrialist</h3>
           <span class="project-stat">10,000 peak CCU</span>
         </div>
-        <p class="project-meta">Programmer · joined March 22, 2026 · retired June 28th, 2026</p>
+        <p class="project-meta">Programmer · joined Mar 22 2026 · retired Jun 28 2026</p>
         <div class="project-body">
-          <div>
-            <p class="project-desc">
-              A factory building and automation game, the kind of thing you'd get if Factorio
-              and Mindustry had a baby on Roblox. Players chain together extractors, conveyors
-              and processors while managing power and pollution. I came on as a programmer and
-              spent most of my time reworking existing machine systems, building new machines
-              from the ground up, and going through the codebase fixing bugs that had been
-              sitting there for a while. A good chunk of my time also went into optimizing core
-              scripts that were eating performance.
-            </p>
-            <div class="project-tags">
-              <span class="tag">Luau</span>
-              <span class="tag">machine logic</span>
-              <span class="tag">optimization</span>
-              <span class="tag">bug fixing</span>
-            </div>
-            <a class="project-link" href="https://www.roblox.com/games/9192423027/Industrialist" target="_blank">play it on Roblox →</a>
+          <p class="project-desc">
+            A factory building and automation game, the kind of thing you'd get if Factorio
+            and Mindustry had a baby on Roblox. Players chain together extractors, conveyors
+            and processors while managing power and pollution. I came on as a programmer and
+            spent most of my time reworking existing machine systems, building new machines
+            from the ground up, and going through the codebase fixing bugs that had been
+            sitting there for a while. A good chunk of my time also went into optimizing core
+            scripts that were eating performance.
+          </p>
+          <div class="project-tags">
+            <span class="tag">Luau</span>
+            <span class="tag">machine logic</span>
+            <span class="tag">optimization</span>
+            <span class="tag">bug fixing</span>
           </div>
+          <a class="project-link" href="https://www.roblox.com/games/9192423027/Industrialist" target="_blank" rel="noopener">play it on Roblox <span class="arrow">→</span></a>
         </div>
       </div>
 
-      <div class="project">
+      <div class="project bracketed"><span class="bk bk-tl"></span><span class="bk bk-tr"></span><span class="bk bk-bl"></span><span class="bk bk-br"></span>
         <div class="project-head">
           <h3 class="project-name">Lapis</h3>
           <span class="project-stat">20k players</span>
@@ -351,15 +504,72 @@
             <span class="tag">Luau</span>
             <span class="tag">gameplay systems</span>
           </div>
-          <a class="project-link" href="https://lapis.gg/" target="_blank">lapis.gg →</a>
+          <a class="project-link" href="https://lapis.gg/" target="_blank" rel="noopener">lapis.gg <span class="arrow">→</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="library">
+    <div class="wrap reveal">
+      <p class="section-label">// open source</p>
+      <h2>Network Library</h2>
+      <p class="project-desc" style="max-width:560px;">
+        A lightweight networking and serialization layer for Luau, built to move data
+        between client and server without the usual overhead. It keeps packet routing and
+        state sync clean and structured, meant to hold up under heavy simulation and high
+        player counts rather than fall over under load.
+      </p>
+      <div class="project-tags" style="margin-bottom:26px;">
+        <span class="tag">Luau</span>
+        <span class="tag">networking</span>
+        <span class="tag">serialization</span>
+        <span class="tag">packet routing</span>
+      </div>
+
+      <div class="repo-browser bracketed"><span class="bk bk-tl"></span><span class="bk bk-tr"></span><span class="bk bk-bl"></span><span class="bk bk-br"></span>
+        <div class="repo-browser-head">
+          <span class="repo-dot"></span>
+          <span class="repo-path mono">ethandevelopz / network-library</span>
+          <a class="repo-open-link mono" href="https://github.com/ethandevelopz/network-library" target="_blank" rel="noopener">open repo →</a>
+        </div>
+        <ul class="repo-file-list">
+          <li>
+            <a href="https://github.com/ethandevelopz/network-library/tree/main/Modules" target="_blank" rel="noopener">
+              <span class="repo-file-icon" aria-hidden="true">▸</span>
+              <span class="repo-file-name mono">Modules</span>
+              <span class="repo-file-tag mono">dir</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/ethandevelopz/network-library/blob/main/server.lua" target="_blank" rel="noopener">
+              <span class="repo-file-icon" aria-hidden="true">·</span>
+              <span class="repo-file-name mono">server.lua</span>
+              <span class="repo-file-tag mono">lua</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/ethandevelopz/network-library/blob/main/client.lua" target="_blank" rel="noopener">
+              <span class="repo-file-icon" aria-hidden="true">·</span>
+              <span class="repo-file-name mono">client.lua</span>
+              <span class="repo-file-tag mono">lua</span>
+            </a>
+          </li>
+        </ul>
+        <div class="repo-license">
+          <span class="repo-license-icon" aria-hidden="true">§</span>
+          <p class="repo-license-text">
+            Viewable for portfolio purposes only. Copying, modifying, or using this code in
+            your own project isn't allowed without asking me first.
+          </p>
         </div>
       </div>
     </div>
   </section>
 
   <section id="skills">
-    <div class="wrap">
-      <p class="section-label">toolkit</p>
+    <div class="wrap reveal">
+      <p class="section-label">// toolkit</p>
       <h2>What I work with</h2>
       <div class="skills-list">
         <div class="skills-col">
@@ -391,24 +601,24 @@
   </section>
 
   <section id="endorsements">
-    <div class="wrap">
-      <p class="section-label">what people say</p>
+    <div class="wrap reveal">
+      <p class="section-label">// what people say</p>
       <h2>Endorsements</h2>
       <div class="endorsements">
-        <div class="endorsement-card">
+        <div class="endorsement-card bracketed"><span class="bk bk-tl"></span><span class="bk bk-tr"></span><span class="bk bk-bl"></span><span class="bk bk-br"></span>
           <p class="endorsement-quote">Ethan always worked hard during his time working for Industrialist. His work ethic was very high and his motivation to succeed was nice to see.</p>
           <div class="endorsement-who">
-            <img src="https://cdn.discordapp.com/avatars/362566328394973185/030281ca6cd4491a5d20ea1129888c96.png" alt="pfp" class="endorsement-avatar">
+            <img src="https://cdn.discordapp.com/avatars/362566328394973185/030281ca6cd4491a5d20ea1129888c96.png" alt="mamytema's avatar" class="endorsement-avatar" loading="lazy">
             <div>
               <div class="endorsement-name">mamytema</div>
               <div class="endorsement-role">Owner @ Mamytema Studios</div>
             </div>
           </div>
         </div>
-        <div class="endorsement-card">
+        <div class="endorsement-card bracketed"><span class="bk bk-tl"></span><span class="bk bk-tr"></span><span class="bk bk-bl"></span><span class="bk bk-br"></span>
           <p class="endorsement-quote">Ethan really saved us on the game. The game was suffering from very bad performance issues, yet he somehow brought it up from the coffin and our players love it!</p>
           <div class="endorsement-who">
-            <img src="https://cdn.discordapp.com/avatars/821379461408751636/2db2d3874ab07589674dc7e38a6e669a.png?size=1024" alt="pfp" class="endorsement-avatar">
+            <img src="https://cdn.discordapp.com/avatars/821379461408751636/2db2d3874ab07589674dc7e38a6e669a.png?size=1024" alt="scope's avatar" class="endorsement-avatar" loading="lazy">
             <div>
               <div class="endorsement-name">scope</div>
               <div class="endorsement-role">Owner @ GSRP</div>
@@ -420,14 +630,17 @@
   </section>
 
   <section id="contact">
-    <div class="wrap">
+    <div class="wrap reveal">
       <div class="contact">
-        <div>
-          <p class="section-label">get in touch</p>
+        <div class="contact-text">
+          <p class="section-label">// get in touch</p>
           <h2>Got something to build?</h2>
-          <p>Discord is the easiest way to reach me, I check it more than anything else.</p>
+          <p>Discord is the easiest way to reach me. I check it more than anything else.</p>
         </div>
-        <div class="discord-tag">ethanmracing</div>
+        <a class="discord-tag" href="https://discord.com/users/1275635857990352948" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.369a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.058a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.073.073 0 0 1 .078.01c.12.099.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.077.077 0 0 0 .084.029 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.674-3.549-13.66a.06.06 0 0 0-.031-.028M8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.418 2.157-2.418 1.21 0 2.176 1.094 2.157 2.418 0 1.334-.955 2.419-2.157 2.419m7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.418 2.157-2.418 1.21 0 2.176 1.094 2.157 2.418 0 1.334-.947 2.419-2.157 2.419"/></svg>
+          ethanmracing
+        </a>
       </div>
     </div>
   </section>
@@ -435,8 +648,38 @@
   <div class="wrap">
     <footer>
       <span>Ethan, Roblox programmer</span>
-      <span>last updated June 2026</span>
+      <span>last updated Aug 2026</span>
     </footer>
   </div>
+
+  <script>
+    const navToggle = document.getElementById('navToggle');
+    const navMenu = document.getElementById('navMenu');
+    navToggle.addEventListener('click', () => {
+      const open = navMenu.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      navToggle.textContent = open ? '×' : '☰';
+    });
+    navMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      navMenu.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', 'false');
+      navToggle.textContent = '☰';
+    }));
+
+    const reveals = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window){
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting){
+            entry.target.classList.add('in');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      reveals.forEach(el => io.observe(el));
+    } else {
+      reveals.forEach(el => el.classList.add('in'));
+    }
+  </script>
 </body>
 </html>
